@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<metainfo>
+    <schemaVersion>2.0</schemaVersion>
+    <services>
+        <service>
+            <name>RANGER_HIVE_PLUGIN</name>
+            <displayName>Ranger Hive Plugin</displayName>
+            <comment></comment>
+            <version>0.6.0</version>
+            <components>
+                <component>
+                    <name>RANGER_HIVE_PLUGIN</name>
+                    <displayName>Ranger Hive Plugin</displayName>
+                    <category>CLIENT</category>
+                    <cardinality>1+</cardinality>
+                    <commandScript>
+                        <script>scripts/ranger_hive_plugin.py</script>
+                        <scriptType>PYTHON</scriptType>
+                        <timeout>600</timeout>
+                    </commandScript>
+        		</component>
+            </components>
+            <osSpecifics>
+                <osSpecific>
+                    <osFamily>any</osFamily>
+                </osSpecific>
+            </osSpecifics>
+        </service>
+    </services>
+</metainfo>
