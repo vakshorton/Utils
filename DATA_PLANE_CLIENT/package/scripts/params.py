@@ -22,7 +22,7 @@ hive_metastore_host = str(master_configs['hive_metastore_host'][0])
 hive_metastore_port = get_port_from_url(config['configurations']['hive-site']['hive.metastore.uris'])
 hive_metastore_uri = 'thrift://'+hive_metastore_host+':'+hive_metastore_port
 hbase_zookeeper = config['configurations']['hbase-site']['hbase.zookeeper.quorum']
-atlas_server_host = str(master_configs['atlas_server_host'][0])
+#atlas_server_host = str(master_configs['atlas_server_host'][0])
 kafka_broker_host = str(master_configs['kafka_broker_hosts'][0])
 if 'port' in config['configurations']['kafka-broker']:
   kafka_port = str(config['configurations']['kafka-broker']['port'])
