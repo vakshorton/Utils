@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+ 
+<configuration>
+
+  <property require-input="true">
+    <name>install_dir</name>
+    <value>/root</value>
+    <description>Directory under which Data Plane Client will be installed</description>
+  </property> 
+
+  <property require-input="true">
+    <name>download_url</name>
+    <value>https://github.com/vakshorton/DataSimulators.git</value>
+    <description>Online location to download Data Plane Util package</description>
+  </property> 
+
+  <property require-input="true">
+    <name>data_plane_ambari_host</name>
+    <value></value>
+    <description>Hostname where the Ambar-Server of the Data Plane cluster is hosted</description>
+  </property>   
+  
+</configuration>
