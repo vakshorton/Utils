@@ -36,7 +36,7 @@ class DataPlaneClient(Script):
         full_file_name = os.path.join(src_dir, file_name)
         if (os.path.isfile(full_file_name)):
             #shutil.copy(full_file_name, dest_dir)
-      
+            
   def status(self, env):
     raise ClientComponentHasNoStatus()
     
