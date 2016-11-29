@@ -35,6 +35,16 @@
 					<default>true</default>
 				</quickLinksConfiguration> 
 			</quickLinksConfigurations>-->
+			<customCommands>
+				<customCommand>
+					<name>synchToDataPlane</name>
+					<commandScript>
+          				<script>scripts/client.py</script>
+          				<scriptType>PYTHON</scriptType>
+          				<timeout>600</timeout>
+        			</commandScript>
+      			</customCommand>
+    		</customCommands>
         </service>
     </services>
 </metainfo>

@@ -11,7 +11,7 @@
 
   <property require-input="true">
     <name>download_url</name>
-    <value>https://github.com/vakshorton/DataSimulators.git</value>
+    <value>https://github.com/vakshorton/Utils.git</value>
     <description>Online location to download Data Plane Util package</description>
   </property> 
 
