@@ -7,12 +7,12 @@ class DataPlaneClient(Script):
     self.configure(env)
     import params
     #debug info
-    Execute('echo list of config dump: ' + str(', '.join(params.list_of_configs)))    
+    Execute('echo list of config dump: ' + str(', '.join(params.list_of_configs)))
     Execute('echo master config dump: ' + str(', '.join(params.master_configs)))
     Execute('echo host level config dump: ' + str(', '.join(params.list_of_host_level_params)))
     Execute('echo java home: ' + params.jdk64_home)
-    Execute('echo ambari host: ' + params.ambari_server_host) 
-    Execute('echo cluster name: ' + params.cluster_name) 
+    Execute('echo ambari host: ' + params.ambari_server_host)
+    Execute('echo cluster name: ' + params.cluster_name)
     Execute('echo namenode host: ' + params.namenode_host)
     Execute('echo namenode port: ' + params.namenode_port)
     Execute('echo hive metastore uri: ' + params.hive_metastore_uri)
@@ -33,7 +33,7 @@ class DataPlaneClient(Script):
     Execute('echo data plane atlas host: ' + params.data_plane_atlas_host)
     Execute('echo data plane kafka host: ' + params.data_plane_kafka_host)
     Execute('echo Download Data Plane Util Bits')
-    if not os.path.exists(params.install_dir):  
+    if not os.path.exists(params.install_dir):
         os.makedirs(params.install_dir)
     os.chdir(params.install_dir)
     Execute('git clone ' + params.download_url)
@@ -80,7 +80,7 @@ class DataPlaneClient(Script):
     Execute('/var/lib/ambari-server/resources/scripts/configs.sh set '+params.data_plane_ambari_host+' '+params.data_plane_cluster_name+' ranger-hive-security '+ src_dir+'/hive-ranger-config/ranger-hive-security')
 
     Execute('echo Setting Hive Atlas Client Configuration...')
-Execute('/var/lib/ambari-server/resources/scripts/configs.sh set '+params.data_plane_ambari_host+' '+params.data_plane_cluster_name+' hive-site "atlas.rest.address" "'+params.data_plane_atlas_host+':'+params.atlas_port+'"')
+    Execute('/var/lib/ambari-server/resources/scripts/configs.sh set '+params.data_plane_ambari_host+' '+params.data_plane_cluster_name+' hive-site "atlas.rest.address" "'+params.data_plane_atlas_host+':'+params.atlas_port+'"')
 
     Execute('/var/lib/ambari-server/resources/scripts/configs.sh set '+params.data_plane_ambari_host+' '+params.data_plane_cluster_name+' hive-atlas-application.properties "atlas.kafka.bootstrap.servers" "'+params.data_plane_kafka_host+':'+params.kafka_port+'"')
 
@@ -119,7 +119,7 @@ Execute('/var/lib/ambari-server/resources/scripts/configs.sh set '+params.data_p
     requests.put('http://'+params.ambari_server_host+':'+ambari_server_port+'/api/v1/clusters/'+params.cluster_name+'/services/STORM', auth=('admin', 'admin'),headers={'X-Requested-By':'ambari'},data=('{"RequestInfo": {"context": "Start Storm"}, "ServiceInfo": {"state": "STARTED"}}'))
 
     requests.put('http://'+params.ambari_server_host+':'+ambari_server_port+'/api/v1/clusters/'+params.cluster_name+'/services/SQOOP', auth=('admin', 'admin'),headers={'X-Requested-By':'ambari'},data=('{"RequestInfo": {"context": "Start Sqoop"}, "ServiceInfo": {"state": "STARTED"}}'))
-    
+
   def status(self, env):
     raise ClientComponentHasNoStatus()
     
@@ -131,7 +131,7 @@ Execute('/var/lib/ambari-server/resources/scripts/configs.sh set '+params.data_p
     import params
     env.set_params(params)
     os.chdir(params.demo_install_dir)
-    Execute('./redeployApplication.sh '+params.nifi_host+' '+params.nifi_port+' '+params.data_plane_atlas_host+' '+params.atlas_port+' '+params.data_plane_hive_server_host+' '+params.hive_server_port))
+    Execute('./redeployApplication.sh '+params.nifi_host+' '+params.nifi_port+' '+params.data_plane_atlas_host+' '+params.atlas_port+' '+params.data_plane_hive_server_host+' '+params.hive_server_port)
     
-if __name__ == "__main__":
-  DataPlaneClient().execute()
+  if __name__ == "__main__":
+    DataPlaneClient().execute()
