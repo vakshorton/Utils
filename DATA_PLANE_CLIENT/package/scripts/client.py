@@ -79,50 +79,50 @@ class DataPlaneClient(Script):
 
     Execute('/var/lib/ambari-server/resources/scripts/configs.sh set '+params.data_plane_ambari_host+' '+params.data_plane_cluster_name+' ranger-hive-security '+ src_dir+'/hive-ranger-config/ranger-hive-security')
 
-Execute('echo Setting Hive Atlas Client Configuration...')
+    Execute('echo Setting Hive Atlas Client Configuration...')
 Execute('/var/lib/ambari-server/resources/scripts/configs.sh set '+params.data_plane_ambari_host+' '+params.data_plane_cluster_name+' hive-site "atlas.rest.address" "'+params.data_plane_atlas_host+':'+params.atlas_port+'"')
 
-Execute('/var/lib/ambari-server/resources/scripts/configs.sh set '+params.data_plane_ambari_host+' '+params.data_plane_cluster_name+' hive-atlas-application.properties "atlas.kafka.bootstrap.servers" "'+params.data_plane_kafka_host+':'+params.kafka_port+'"')
+    Execute('/var/lib/ambari-server/resources/scripts/configs.sh set '+params.data_plane_ambari_host+' '+params.data_plane_cluster_name+' hive-atlas-application.properties "atlas.kafka.bootstrap.servers" "'+params.data_plane_kafka_host+':'+params.kafka_port+'"')
 
-Execute('/var/lib/ambari-server/resources/scripts/configs.sh set '+params.data_plane_ambari_host+' '+params.data_plane_cluster_name+' hive-atlas-application.properties "atlas.kafka.zookeeper.connect" "'+params.data_plane_zookeeper_host+':'+params.zookeeper_port+'"')
+    Execute('/var/lib/ambari-server/resources/scripts/configs.sh set '+params.data_plane_ambari_host+' '+params.data_plane_cluster_name+' hive-atlas-application.properties "atlas.kafka.zookeeper.connect" "'+params.data_plane_zookeeper_host+':'+params.zookeeper_port+'"')
 
-Execute('echo Setting Storm Atlas Client Configuration...')
-Execute('/var/lib/ambari-server/resources/scripts/configs.sh set '+params.data_plane_ambari_host+' '+params.data_plane_cluster_name+' storm-atlas-application.properties "atlas.rest.address" "'+params.data_plane_atlas_host+':'+params.atlas_port+'"')
+    Execute('echo Setting Storm Atlas Client Configuration...')
+    Execute('/var/lib/ambari-server/resources/scripts/configs.sh set '+params.data_plane_ambari_host+' '+params.data_plane_cluster_name+' storm-atlas-application.properties "atlas.rest.address" "'+params.data_plane_atlas_host+':'+params.atlas_port+'"')
 
-Execute('/var/lib/ambari-server/resources/scripts/configs.sh set '+params.data_plane_ambari_host+' '+params.data_plane_cluster_name+' storm-atlas-application.properties "atlas.kafka.zookeeper.connect" "'+params.data_plane_zookeeper_host+':'+params.zookeeper_port+'"')
+    Execute('/var/lib/ambari-server/resources/scripts/configs.sh set '+params.data_plane_ambari_host+' '+params.data_plane_cluster_name+' storm-atlas-application.properties "atlas.kafka.zookeeper.connect" "'+params.data_plane_zookeeper_host+':'+params.zookeeper_port+'"')
 
-Execute('/var/lib/ambari-server/resources/scripts/configs.sh set '+params.data_plane_ambari_host+' '+params.data_plane_cluster_name+' storm-atlas-application.properties "atlas.kafka.bootstrap.servers" "'+params.data_plane_kafka_host+':'+params.kafka_port+'"')
+    Execute('/var/lib/ambari-server/resources/scripts/configs.sh set '+params.data_plane_ambari_host+' '+params.data_plane_cluster_name+' storm-atlas-application.properties "atlas.kafka.bootstrap.servers" "'+params.data_plane_kafka_host+':'+params.kafka_port+'"')
 
-Execute('echo Setting Sqoop Atlas Client Configuration...')
-Execute('/var/lib/ambari-server/resources/scripts/configs.sh set '+params.data_plane_ambari_host+' '+params.data_plane_cluster_name+' sqoop-atlas-application.properties "atlas.rest.address" "'+params.data_plane_atlas_host+':'+params.atlas_port+'"')
+    Execute('echo Setting Sqoop Atlas Client Configuration...')
+    Execute('/var/lib/ambari-server/resources/scripts/configs.sh set '+params.data_plane_ambari_host+' '+params.data_plane_cluster_name+' sqoop-atlas-application.properties "atlas.rest.address" "'+params.data_plane_atlas_host+':'+params.atlas_port+'"')
 
-Execute('/var/lib/ambari-server/resources/scripts/configs.sh set '+params.data_plane_ambari_host+' '+params.data_plane_cluster_name+' sqoop-atlas-application.properties "atlas.kafka.zookeeper.connect" "'+params.data_plane_zookeeper_host+':'+params.zookeeper_port+'"')
+    Execute('/var/lib/ambari-server/resources/scripts/configs.sh set '+params.data_plane_ambari_host+' '+params.data_plane_cluster_name+' sqoop-atlas-application.properties "atlas.kafka.zookeeper.connect" "'+params.data_plane_zookeeper_host+':'+params.zookeeper_port+'"')
 
-Execute('/var/lib/ambari-server/resources/scripts/configs.sh set '+params.data_plane_ambari_host+' '+params.data_plane_cluster_name+' sqoop-atlas-application.properties "atlas.kafka.bootstrap.servers" "'+params.data_plane_kafka_host+':'+params.kafka_port+'"')
+    Execute('/var/lib/ambari-server/resources/scripts/configs.sh set '+params.data_plane_ambari_host+' '+params.data_plane_cluster_name+' sqoop-atlas-application.properties "atlas.kafka.bootstrap.servers" "'+params.data_plane_kafka_host+':'+params.kafka_port+'"')
 
-Execute('echo Setting Hive Meta Store Configuration...')
-Execute('/var/lib/ambari-server/resources/scripts/configs.sh set '+params.data_plane_ambari_host+' '+params.data_plane_cluster_name+' hive-site "javax.jdo.option.ConnectionURL" "jdbc:mysql://'+data_plane_hiveserver_host+'/hive?createDatabaseIfNotExist=true"')
+    Execute('echo Setting Hive Meta Store Configuration...')
+    Execute('/var/lib/ambari-server/resources/scripts/configs.sh set '+params.data_plane_ambari_host+' '+params.data_plane_cluster_name+' hive-site "javax.jdo.option.ConnectionURL" "jdbc:mysql://'+data_plane_hiveserver_host+'/hive?createDatabaseIfNotExist=true"')
 
-Execute('/var/lib/ambari-server/resources/scripts/configs.sh set '+params.data_plane_ambari_host+' '+params.data_plane_cluster_name+' hive-site "javax.jdo.option.ConnectionPassword" "hive"')
+    Execute('/var/lib/ambari-server/resources/scripts/configs.sh set '+params.data_plane_ambari_host+' '+params.data_plane_cluster_name+' hive-site "javax.jdo.option.ConnectionPassword" "hive"')
 
-Execute('/var/lib/ambari-server/resources/scripts/configs.sh set '+params.data_plane_ambari_host+' '+params.data_plane_cluster_name+' hive-site "hive.metastore.uris" "'+params.data_plane_hive_metastore_uri+'"')
+    Execute('/var/lib/ambari-server/resources/scripts/configs.sh set '+params.data_plane_ambari_host+' '+params.data_plane_cluster_name+' hive-site "hive.metastore.uris" "'+params.data_plane_hive_metastore_uri+'"')
 
-Execute('echo Restarting Services to refresh configurations...')
-requests.put('http://'+params.ambari_server_host+':'+ambari_server_port+'/api/v1/clusters/'+params.cluster_name+'/services/HIVE', auth=('admin', 'admin'),headers={'X-Requested-By':'ambari'},data=('{"RequestInfo": {"context": "Stop Hive"}, "ServiceInfo": {"state": "INSTALLED"}}'))
+    Execute('echo Restarting Services to refresh configurations...')
+    requests.put('http://'+params.ambari_server_host+':'+ambari_server_port+'/api/v1/clusters/'+params.cluster_name+'/services/HIVE', auth=('admin', 'admin'),headers={'X-Requested-By':'ambari'},data=('{"RequestInfo": {"context": "Stop Hive"}, "ServiceInfo": {"state": "INSTALLED"}}'))
 
-requests.put('http://'+params.ambari_server_host+':'+ambari_server_port+'/api/v1/clusters/'+params.cluster_name+'/services/STORM', auth=('admin', 'admin'),headers={'X-Requested-By':'ambari'},data=('{"RequestInfo": {"context": "Stop Storm"}, "ServiceInfo": {"state": "INSTALLED"}}'))
+    requests.put('http://'+params.ambari_server_host+':'+ambari_server_port+'/api/v1/clusters/'+params.cluster_name+'/services/STORM', auth=('admin', 'admin'),headers={'X-Requested-By':'ambari'},data=('{"RequestInfo": {"context": "Stop Storm"}, "ServiceInfo": {"state": "INSTALLED"}}'))
 
-requests.put('http://'+params.ambari_server_host+':'+ambari_server_port+'/api/v1/clusters/'+params.cluster_name+'/services/SQOOP', auth=('admin', 'admin'),headers={'X-Requested-By':'ambari'},data=('{"RequestInfo": {"context": "Stop Sqoop"}, "ServiceInfo": {"state": "INSTALLED"}}'))
+    requests.put('http://'+params.ambari_server_host+':'+ambari_server_port+'/api/v1/clusters/'+params.cluster_name+'/services/SQOOP', auth=('admin', 'admin'),headers={'X-Requested-By':'ambari'},data=('{"RequestInfo": {"context": "Stop Sqoop"}, "ServiceInfo": {"state": "INSTALLED"}}'))
 
-requests.put('http://'+params.ambari_server_host+':'+ambari_server_port+'/api/v1/clusters/'+params.cluster_name+'/services/HIVE', auth=('admin', 'admin'),headers={'X-Requested-By':'ambari'},data=('{"RequestInfo": {"context": "Start Hive"}, "ServiceInfo": {"state": "STARTED"}}'))
+    requests.put('http://'+params.ambari_server_host+':'+ambari_server_port+'/api/v1/clusters/'+params.cluster_name+'/services/HIVE', auth=('admin', 'admin'),headers={'X-Requested-By':'ambari'},data=('{"RequestInfo": {"context": "Start Hive"}, "ServiceInfo": {"state": "STARTED"}}'))
 
-requests.put('http://'+params.ambari_server_host+':'+ambari_server_port+'/api/v1/clusters/'+params.cluster_name+'/services/STORM', auth=('admin', 'admin'),headers={'X-Requested-By':'ambari'},data=('{"RequestInfo": {"context": "Start Storm"}, "ServiceInfo": {"state": "STARTED"}}'))
+    requests.put('http://'+params.ambari_server_host+':'+ambari_server_port+'/api/v1/clusters/'+params.cluster_name+'/services/STORM', auth=('admin', 'admin'),headers={'X-Requested-By':'ambari'},data=('{"RequestInfo": {"context": "Start Storm"}, "ServiceInfo": {"state": "STARTED"}}'))
 
-requests.put('http://'+params.ambari_server_host+':'+ambari_server_port+'/api/v1/clusters/'+params.cluster_name+'/services/SQOOP', auth=('admin', 'admin'),headers={'X-Requested-By':'ambari'},data=('{"RequestInfo": {"context": "Start Sqoop"}, "ServiceInfo": {"state": "STARTED"}}'))
-
+    requests.put('http://'+params.ambari_server_host+':'+ambari_server_port+'/api/v1/clusters/'+params.cluster_name+'/services/SQOOP', auth=('admin', 'admin'),headers={'X-Requested-By':'ambari'},data=('{"RequestInfo": {"context": "Start Sqoop"}, "ServiceInfo": {"state": "STARTED"}}'))
+    
   def status(self, env):
     raise ClientComponentHasNoStatus()
-
+    
   def configure(self, env):
     import params
     env.set_params(params)
