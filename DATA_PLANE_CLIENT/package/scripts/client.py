@@ -6,7 +6,6 @@ class DataPlaneClient(Script):
   def install(self, env):
     self.configure(env)
     import params
-    
     #debug info
     Execute('echo list of config dump: ' + str(', '.join(params.list_of_configs)))    
     Execute('echo master config dump: ' + str(', '.join(params.master_configs)))
@@ -20,21 +19,19 @@ class DataPlaneClient(Script):
     Execute('echo kafka host: ' + params.kafka_broker_host)
     Execute('echo kafka port: ' + params.kafka_port)
     Execute('echo stack_version: ' + params.stack_version_unformatted)
-    
     Execute('echo Download Data Plane Util Bits')
     if not os.path.exists(params.install_dir):  
         os.makedirs(params.install_dir)
     os.chdir(params.install_dir)
     Execute('git clone ' + params.download_url)
     os.chdir(params.install_dir+'/Util')
-    
     Execute('echo Install the config client')
     src_dir = ('/var/lib/ambari-agent/cache/stacks/HDP/2.5/services/RANGER_HIVE_PLUGIN/package/configuration')
     dest_dir = ('/usr/hdp/current/hive-server2/conf/conf.server')
     src_files = os.listdir(src_dir)
-    for file_name in src_files:
-        full_file_name = os.path.join(src_dir, file_name)
-        if (os.path.isfile(full_file_name)):
+    #for file_name in src_files:
+        #full_file_name = os.path.join(src_dir, file_name)
+        #if (os.path.isfile(full_file_name)):
             #shutil.copy(full_file_name, dest_dir)
 
   def status(self, env):
