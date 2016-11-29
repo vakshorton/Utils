@@ -20,6 +20,8 @@ class DataPlaneClient(Script):
     Execute('echo atlas host: ' + params.atlas_host)
     Execute('echo kafka host: ' + params.kafka_broker_host)
     Execute('echo kafka port: ' + params.kafka_port)
+    Execute('echo nifi host: ' + params.nifi_host)
+    Execute('echo nifi port: ' + params.nifi_port)
     Execute('echo stack_version: ' + params.stack_version_unformatted)
     
     Execute('echo data plane ambari host: ' + params.data_plane_ambari_host)
@@ -107,17 +109,17 @@ Execute('/var/lib/ambari-server/resources/scripts/configs.sh set '+params.data_p
 
 echo Execute('echo Restarting Services to refresh configurations...')
 
-requests.put('http://'+params.ambari_server_host+':8080/api/v1/clusters/'+params.cluster_name+'/services/HIVE', auth=('admin', 'admin'),headers={'X-Requested-By':'ambari'},data=('{"RequestInfo": {"context": "Stop Hive"}, "ServiceInfo": {"state": "INSTALLED"}}'))
+requests.put('http://'+params.ambari_server_host+':'+ambari_server_port+'/api/v1/clusters/'+params.cluster_name+'/services/HIVE', auth=('admin', 'admin'),headers={'X-Requested-By':'ambari'},data=('{"RequestInfo": {"context": "Stop Hive"}, "ServiceInfo": {"state": "INSTALLED"}}'))
 
-requests.put('http://'+params.ambari_server_host+':8080/api/v1/clusters/'+params.cluster_name+'/services/STORM', auth=('admin', 'admin'),headers={'X-Requested-By':'ambari'},data=('{"RequestInfo": {"context": "Stop Storm"}, "ServiceInfo": {"state": "INSTALLED"}}'))
+requests.put('http://'+params.ambari_server_host+':'+ambari_server_port+'/api/v1/clusters/'+params.cluster_name+'/services/STORM', auth=('admin', 'admin'),headers={'X-Requested-By':'ambari'},data=('{"RequestInfo": {"context": "Stop Storm"}, "ServiceInfo": {"state": "INSTALLED"}}'))
 
-requests.put('http://'+params.ambari_server_host+':8080/api/v1/clusters/'+params.cluster_name+'/services/SQOOP', auth=('admin', 'admin'),headers={'X-Requested-By':'ambari'},data=('{"RequestInfo": {"context": "Stop Sqoop"}, "ServiceInfo": {"state": "INSTALLED"}}'))
+requests.put('http://'+params.ambari_server_host+':'+ambari_server_port+'/api/v1/clusters/'+params.cluster_name+'/services/SQOOP', auth=('admin', 'admin'),headers={'X-Requested-By':'ambari'},data=('{"RequestInfo": {"context": "Stop Sqoop"}, "ServiceInfo": {"state": "INSTALLED"}}'))
 
-requests.put('http://'+params.ambari_server_host+':8080/api/v1/clusters/'+params.cluster_name+'/services/HIVE', auth=('admin', 'admin'),headers={'X-Requested-By':'ambari'},data=('{"RequestInfo": {"context": "Start Hive"}, "ServiceInfo": {"state": "STARTED"}}'))
+requests.put('http://'+params.ambari_server_host+':'+ambari_server_port+'/api/v1/clusters/'+params.cluster_name+'/services/HIVE', auth=('admin', 'admin'),headers={'X-Requested-By':'ambari'},data=('{"RequestInfo": {"context": "Start Hive"}, "ServiceInfo": {"state": "STARTED"}}'))
 
-requests.put('http://'+params.ambari_server_host+':8080/api/v1/clusters/'+params.cluster_name+'/services/STORM', auth=('admin', 'admin'),headers={'X-Requested-By':'ambari'},data=('{"RequestInfo": {"context": "Start Storm"}, "ServiceInfo": {"state": "STARTED"}}'))
+requests.put('http://'+params.ambari_server_host+':'+ambari_server_port+'/api/v1/clusters/'+params.cluster_name+'/services/STORM', auth=('admin', 'admin'),headers={'X-Requested-By':'ambari'},data=('{"RequestInfo": {"context": "Start Storm"}, "ServiceInfo": {"state": "STARTED"}}'))
 
-requests.put('http://'+params.ambari_server_host+':8080/api/v1/clusters/'+params.cluster_name+'/services/SQOOP', auth=('admin', 'admin'),headers={'X-Requested-By':'ambari'},data=('{"RequestInfo": {"context": "Start Sqoop"}, "ServiceInfo": {"state": "STARTED"}}'))
+requests.put('http://'+params.ambari_server_host+':'+ambari_server_port+'/api/v1/clusters/'+params.cluster_name+'/services/SQOOP', auth=('admin', 'admin'),headers={'X-Requested-By':'ambari'},data=('{"RequestInfo": {"context": "Start Sqoop"}, "ServiceInfo": {"state": "STARTED"}}'))
 
   def status(self, env):
     raise ClientComponentHasNoStatus()
@@ -129,7 +131,8 @@ requests.put('http://'+params.ambari_server_host+':8080/api/v1/clusters/'+params
   def synchToDataPlane(self, env):
     import params
     env.set_params(params)
-    Execute('redeployApplication.sh')
+    os.chdir(params.demo_install_dir)
+    Execute('./redeployApplication.sh '+params.nifi_host+' '+params.nifi_port+' '+params.data_plane_atlas_host+' '+params.atlas_port+' '+params.data_plane_hive_server_host+' '+params.hive_server_port))
     
 if __name__ == "__main__":
   DataPlaneClient().execute()
