@@ -20,25 +20,9 @@
                     </commandScript>
                     <customCommands>
 						<customCommand>
-							<name>synchToDataPlane</name>
+							<name>data_plane_synch</name>
 							<commandScript>
           						<script>scripts/client.py</script>
-          						<scriptType>PYTHON</scriptType>
-          						<timeout>600</timeout>
-        					</commandScript>
-      					</customCommand>
-						<customCommand>
-							<name>startService</name>
-							<commandScript>
-          						<script>scripts/ambari_service_control.py</script>
-          						<scriptType>PYTHON</scriptType>
-          						<timeout>600</timeout>
-        					</commandScript>
-      					</customCommand>
-						<customCommand>
-							<name>stopService</name>
-							<commandScript>
-          						<script>scripts/ambari_service_control.py</script>
           						<scriptType>PYTHON</scriptType>
           						<timeout>600</timeout>
         					</commandScript>

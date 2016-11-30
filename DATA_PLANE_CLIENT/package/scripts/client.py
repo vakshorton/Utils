@@ -118,7 +118,7 @@ class DataPlaneClient(Script):
     import params
     env.set_params(params)
 
-  def synchToDataPlane(self, env):
+  def data_plane_synch(self, env):
     import params
     env.set_params(params)
     Execute('echo Restarting Services to refresh configurations...')
