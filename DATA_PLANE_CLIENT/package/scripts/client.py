@@ -101,7 +101,7 @@ class DataPlaneClient(Script):
     Execute('/var/lib/ambari-server/resources/scripts/configs.sh set '+params.ambari_server_host+' '+params.cluster_name+' sqoop-atlas-application.properties "atlas.kafka.bootstrap.servers" "'+params.data_plane_kafka_host+':'+params.kafka_port+'"')
 
     Execute('echo Setting Hive Meta Store Configuration...')
-    Execute('/var/lib/ambari-server/resources/scripts/configs.sh set '+params.ambari_server_host+' '+params.cluster_name+' hive-site "javax.jdo.option.ConnectionURL" "jdbc:mysql://'+data_plane_hiveserver_host+'/hive?createDatabaseIfNotExist=true"')
+    Execute('/var/lib/ambari-server/resources/scripts/configs.sh set '+params.ambari_server_host+' '+params.cluster_name+' hive-site "javax.jdo.option.ConnectionURL" "jdbc:mysql://'+data_plane_hive_server_host+'/hive?createDatabaseIfNotExist=true"')
 
     Execute('/var/lib/ambari-server/resources/scripts/configs.sh set '+params.ambari_server_host+' '+params.cluster_name+' hive-site "javax.jdo.option.ConnectionPassword" "hive"')
 
