@@ -1,42 +1,9 @@
 import sys, os, pwd, signal, time, shutil, requests, json
 from subprocess import *
 from resource_management import *
+from amabri_service_control import *
 
 class DataPlaneClient(Script):
-  def stopService(service):
-    import params
-    service_status = str(json.loads(requests.get('http://'+params.ambari_server_host+':'+params.ambari_server_port+'/api/v1/clusters/'+params.cluster_name+'/services/'+service, auth=('admin', 'admin')).content).get('ServiceInfo').get('state'))
-    if service_status == 'STARTED':
-        task_id = str(json.loads(requests.put('http://'+params.ambari_server_host+':'+params.ambari_server_port+'/api/v1/clusters/'+params.cluster_name+'/services/'+service, auth=('admin', 'admin'),headers={'X-Requested-By':'ambari'},data=('{"RequestInfo": {"context": "Stop '+service+'"}, "ServiceInfo": {"state": "INSTALLED"}}')).content).get('Requests').get('id'))
-        loop_escape = False
-        while loop_escape != True:
-            task_status = str(json.loads(requests.get('http://'+params.ambari_server_host+':'+params.ambari_server_port+'/api/v1/clusters/'+params.cluster_name+'/requests/'+task_id, auth=('admin', 'admin')).content).get('Requests').get('request_status'))
-            if task_status == 'COMPLETED':
-                loop_escape = True
-                time.sleep(2)
-            Execute('echo Stop Service '+service+' Task Status '+task_status)
-        Execute('echo Service '+service+' Stopped...')
-    elif service_status == 'INSTALLED':
-        Execute('echo Service '+service+' Already Stopped')
-    time.sleep(2)
-
-  def startService(service):
-    import params
-    service_status = str(json.loads(requests.get('http://'+params.ambari_server_host+':'+params.ambari_server_port+'/api/v1/clusters/'+params.cluster_name+'/services/'+service, auth=('admin', 'admin')).content).get('ServiceInfo').get('state'))
-    if service_status == 'INSTALLED':
-        task_id = str(json.loads(requests.put('http://'+params.ambari_server_host+':'+params.ambari_server_port+'/api/v1/clusters/'+params.cluster_name+'/services/'+service, auth=('admin', 'admin'),headers={'X-Requested-By':'ambari'},data=('{"RequestInfo": {"context": "Start '+service+'"}, "ServiceInfo": {"state": "STARTED"}}')).content).get('Requests').get('id'))
-        loop_escape = False
-        while loop_escape != True:
-            task_status = str(json.loads(requests.get('http://'+params.ambari_server_host+':'+params.ambari_server_port+'/api/v1/clusters/'+params.cluster_name+'/requests/'+task_id, auth=('admin', 'admin')).content).get('Requests').get('request_status'))
-            if task_status == 'COMPLETED':
-                loop_escape = True
-                time.sleep(2)
-            Execute('echo Start '+service+' Service Task Status '+task_status)
-        Execute('echo Service '+service+' Stopped...')
-    elif service_status == 'STARTED':
-        Execute('echo Service '+service+' Already Stopped')
-    time.sleep(2)
-
   def install(self, env):
     self.configure(env)
     import params
@@ -146,13 +113,13 @@ class DataPlaneClient(Script):
     Execute(config_sh+' set '+params.ambari_server_host+' '+params.cluster_name+' hive-site "hive.metastore.uris" "'+params.data_plane_hive_metastore_uri+'"')
 
     Execute('echo Restarting Services to refresh configurations...')
-    stopService('HIVE')
-    stopService('STORM')
-    stopService('SQOOP')
+    stopService('HIVE',params.ambari_server_host,params.ambari_server_port,params.cluster_name)
+    stopService('STORM',params.ambari_server_host,params.ambari_server_port,params.cluster_name)
+    stopService('SQOOP',params.ambari_server_host,params.ambari_server_port,params.cluster_name)
     time.sleep(1)
-    startService('HIVE')
-    startService('STORM')
-    startService('SQOOP')
+    startService('HIVE',params.ambari_server_host,params.ambari_server_port,params.cluster_name)
+    startService('STORM',params.ambari_server_host,params.ambari_server_port,params.cluster_name)
+    startService('SQOOP',params.ambari_server_host,params.ambari_server_port,params.cluster_name)
 
   def status(self, env):
     raise ClientComponentHasNoStatus()
