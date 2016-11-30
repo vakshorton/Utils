@@ -5,7 +5,7 @@
         <service>
             <name>DATA_PLANE_CLIENT</name>
             <displayName>Data Plane Client</displayName>
-            <comment>Client utility that configures the flow of data from this cluster to a persistent "Data Plane" cluster. The Data Plane is the central repository for Meta Data, Authorization, and Audit services (Atlas, Ranger, Schema Meta Store).</comment>
+            <comment>Client utility that configures the flow meta data and access policy enforcement between this cluster and a persistent "Data Plane" cluster. The Data Plane is the central repository for Meta Data, Authorization, and Audit services (Atlas, Ranger, Schema Meta Store).</comment>
             <version>0.1.0</version>
             <components>
                 <component>
@@ -18,6 +18,16 @@
                         <scriptType>PYTHON</scriptType>
                         <timeout>600</timeout>
                     </commandScript>
+                    <customCommands>
+						<customCommand>
+							<name>synchToDataPlane</name>
+							<commandScript>
+          						<script>scripts/client.py</script>
+          						<scriptType>PYTHON</scriptType>
+          						<timeout>600</timeout>
+        					</commandScript>
+      					</customCommand>
+    				</customCommands>
         		</component>
             </components>
             <osSpecifics>
@@ -35,16 +45,6 @@
 					<default>true</default>
 				</quickLinksConfiguration> 
 			</quickLinksConfigurations>-->
-			<customCommands>
-				<customCommand>
-					<name>synchToDataPlane</name>
-					<commandScript>
-          				<script>scripts/client.py</script>
-          				<scriptType>PYTHON</scriptType>
-          				<timeout>600</timeout>
-        			</commandScript>
-      			</customCommand>
-    		</customCommands>
         </service>
     </services>
 </metainfo>

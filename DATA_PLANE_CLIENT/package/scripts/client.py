@@ -35,7 +35,10 @@ class DataPlaneClient(Script):
     Execute('echo Download Data Plane Util Bits')
     if not os.path.exists(params.install_dir):
         os.makedirs(params.install_dir)
-    os.chdir(params.install_dir)
+    
+    if os.path.exists(params.install_dir+'/Utils'):
+        shutil.rmtree(params.install_dir+'/Utils')
+        os.chdir(params.install_dir)
     Execute('git clone ' + params.download_url)
     
     Execute('echo Install and configure Ranger Hive Plugin')
@@ -109,22 +112,13 @@ class DataPlaneClient(Script):
     Execute(config_sh+' set '+params.ambari_server_host+' '+params.cluster_name+' hive-site "hive.metastore.uris" "'+params.data_plane_hive_metastore_uri+'"')
 
     Execute('echo Restarting Services to refresh configurations...')
-    requests.put('http://'+params.ambari_server_host+':'+params.ambari_server_port+'/api/v1/clusters/'+params.cluster_name+'/services/HIVE', auth=('admin', 'admin'),headers={'X-Requested-By':'ambari'},data=('{"RequestInfo": {"context": "Stop Hive"}, "ServiceInfo": {"state": "INSTALLED"}}'))
-
-   time.sleep(2)
-   requests.put('http://'+params.ambari_server_host+':'+params.ambari_server_port+'/api/v1/clusters/'+params.cluster_name+'/services/STORM', auth=('admin', 'admin'),headers={'X-Requested-By':'ambari'},data=('{"RequestInfo": {"context": "Stop Storm"}, "ServiceInfo": {"state": "INSTALLED"}}'))
-
-    time.sleep(2)
-    requests.put('http://'+params.ambari_server_host+':'+params.ambari_server_port+'/api/v1/clusters/'+params.cluster_name+'/services/SQOOP', auth=('admin', 'admin'),headers={'X-Requested-By':'ambari'},data=('{"RequestInfo": {"context": "Stop Sqoop"}, "ServiceInfo": {"state": "INSTALLED"}}'))
-
-    time.sleep(2)
-    requests.put('http://'+params.ambari_server_host+':'+params.ambari_server_port+'/api/v1/clusters/'+params.cluster_name+'/services/HIVE', auth=('admin', 'admin'),headers={'X-Requested-By':'ambari'},data=('{"RequestInfo": {"context": "Start Hive"}, "ServiceInfo": {"state": "STARTED"}}'))
-
-    time.sleep(2)
-    requests.put('http://'+params.ambari_server_host+':'+params.ambari_server_port+'/api/v1/clusters/'+params.cluster_name+'/services/STORM', auth=('admin', 'admin'),headers={'X-Requested-By':'ambari'},data=('{"RequestInfo": {"context": "Start Storm"}, "ServiceInfo": {"state": "STARTED"}}'))
-
-    time.sleep(2)
-    requests.put('http://'+params.ambari_server_host+':'+params.ambari_server_port+'/api/v1/clusters/'+params.cluster_name+'/services/SQOOP', auth=('admin', 'admin'),headers={'X-Requested-By':'ambari'},data=('{"RequestInfo": {"context": "Start Sqoop"}, "ServiceInfo": {"state": "STARTED"}}'))
+    stopService('HIVE')
+    stopService('STORM')
+    stopService('SQOOP')
+    time.sleep(1)
+    startService('HIVE')
+    startService('STORM')
+    startService('SQOOP')
 
     
   def status(self, env):
@@ -140,5 +134,39 @@ class DataPlaneClient(Script):
     os.chdir(params.demo_install_dir)
     Execute('./redeployApplication.sh '+params.nifi_host+' '+params.nifi_port+' '+params.data_plane_atlas_host+' '+params.atlas_port+' '+params.data_plane_hive_server_host+' '+params.hive_server_port)
 
+  def stopService(service):
+    import params
+    service_status = str(json.loads(requests.get('http://'+params.ambari_server_host+':'+params.ambari_server_port+'/api/v1/clusters/'+params.cluster_name+'/services/'+service, auth=('admin', 'admin')).content).get('ServiceInfo').get('state'))
+    if service_status == 'STARTED':
+        task_id = str(json.loads(requests.put('http://'+params.ambari_server_host+':'+params.ambari_server_port+'/api/v1/clusters/'+params.cluster_name+'/services/'+service, auth=('admin', 'admin'),headers={'X-Requested-By':'ambari'},data=('{"RequestInfo": {"context": "Stop '+service+'"}, "ServiceInfo": {"state": "INSTALLED"}}')).content).get('Requests').get('id'))
+        loop_escape = False
+        while loop_escape != True:
+            task_status = str(json.loads(requests.get('http://'+params.ambari_server_host+':'+params.ambari_server_port+'/api/v1/clusters/'+params.cluster_name+'/requests/'+task_id, auth=('admin', 'admin')).content).get('Requests').get('request_status'))
+            if task_status == 'COMPLETED':
+                loop_escape = True
+                time.sleep(2)
+            Execute('echo Stop Service '+service+' Task Status '+task_status)
+        Execute('echo Service '+service+' Stopped...')
+    elif service_status == 'INSTALLED':
+        Execute('echo Service '+service+' Already Stopped')
+    time.sleep(2)
+
+  def startService(service):
+    import params
+    service_status = str(json.loads(requests.get('http://'+params.ambari_server_host+':'+params.ambari_server_port+'/api/v1/clusters/'+params.cluster_name+'/services/'+service, auth=('admin', 'admin')).content).get('ServiceInfo').get('state'))
+    if service_status == 'INSTALLED':
+        task_id = str(json.loads(requests.put('http://'+params.ambari_server_host+':'+params.ambari_server_port+'/api/v1/clusters/'+params.cluster_name+'/services/'+service, auth=('admin', 'admin'),headers={'X-Requested-By':'ambari'},data=('{"RequestInfo": {"context": "Start '+service+'"}, "ServiceInfo": {"state": "STARTED"}}')).content).get('Requests').get('id'))
+        loop_escape = False
+        while loop_escape != True:
+            task_status = str(json.loads(requests.get('http://'+params.ambari_server_host+':'+params.ambari_server_port+'/api/v1/clusters/'+params.cluster_name+'/requests/'+task_id, auth=('admin', 'admin')).content).get('Requests').get('request_status'))
+            if task_status == 'COMPLETED':
+                loop_escape = True
+                time.sleep(2)
+            Execute('echo Start '+service+' Service Task Status '+task_status)
+        Execute('echo Service '+service+' Stopped...')
+    elif service_status == 'STARTED':
+        Execute('echo Service '+service+' Already Stopped')
+    time.sleep(2)
+    
 if __name__ == "__main__":
   DataPlaneClient().execute()
