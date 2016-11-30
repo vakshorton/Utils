@@ -141,7 +141,7 @@ class DataPlaneClient(Script):
             if task_status == 'COMPLETED':
                 loop_escape = True
                 time.sleep(2)
-            Execute('echo Stop Service '+service+' Task Status '+task_status)
+            Execute('echo Stop Service STORM Task Status '+task_status)
         Execute('echo Service STORM Stopped...')
     elif service_status == 'INSTALLED':
         Execute('echo Service STORM Already Stopped')
@@ -156,7 +156,7 @@ class DataPlaneClient(Script):
             if task_status == 'COMPLETED':
                 loop_escape = True
                 time.sleep(2)
-            Execute('echo Stop Service '+service+' Task Status '+task_status)
+            Execute('echo Stop Service SQOOP Task Status '+task_status)
         Execute('echo Service SQOOP Stopped...')
     elif service_status == 'INSTALLED':
         Execute('echo Service SQOOP Already Stopped')
