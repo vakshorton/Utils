@@ -1,7 +1,8 @@
 import sys, os, pwd, signal, time, shutil, requests, json
 from subprocess import *
 from resource_management import *
-from amabri_service_control import *
+import startService
+import stopService
 
 class DataPlaneClient(Script):
   def install(self, env):

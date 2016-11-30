@@ -27,6 +27,22 @@
           						<timeout>600</timeout>
         					</commandScript>
       					</customCommand>
+						<customCommand>
+							<name>startService</name>
+							<commandScript>
+          						<script>scripts/ambari_service_control.py</script>
+          						<scriptType>PYTHON</scriptType>
+          						<timeout>600</timeout>
+        					</commandScript>
+      					</customCommand>
+						<customCommand>
+							<name>stopService</name>
+							<commandScript>
+          						<script>scripts/ambari_service_control.py</script>
+          						<scriptType>PYTHON</scriptType>
+          						<timeout>600</timeout>
+        					</commandScript>
+      					</customCommand>
     				</customCommands>
         		</component>
             </components>
