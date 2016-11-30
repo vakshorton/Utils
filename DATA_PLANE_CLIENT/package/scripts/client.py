@@ -38,7 +38,7 @@ class DataPlaneClient(Script):
     
     if os.path.exists(params.install_dir+'/Utils'):
         shutil.rmtree(params.install_dir+'/Utils')
-        os.chdir(params.install_dir)
+    os.chdir(params.install_dir)
     Execute('git clone ' + params.download_url)
     
     Execute('echo Install and configure Ranger Hive Plugin')
