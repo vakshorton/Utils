@@ -1,8 +1,6 @@
 import sys, os, pwd, signal, time, shutil, requests, json
 from subprocess import *
 from resource_management import *
-import startService
-import stopService
 
 class DataPlaneClient(Script):
   def install(self, env):
@@ -114,6 +112,9 @@ class DataPlaneClient(Script):
     Execute(config_sh+' set '+params.ambari_server_host+' '+params.cluster_name+' hive-site "hive.metastore.uris" "'+params.data_plane_hive_metastore_uri+'"')
 
     Execute('echo Restarting Services to refresh configurations...')
+    
+    import startService
+    import stopService
     stopService('HIVE',params.ambari_server_host,params.ambari_server_port,params.cluster_name)
     stopService('STORM',params.ambari_server_host,params.ambari_server_port,params.cluster_name)
     stopService('SQOOP',params.ambari_server_host,params.ambari_server_port,params.cluster_name)
