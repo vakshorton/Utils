@@ -111,6 +111,23 @@ class DataPlaneClient(Script):
 
     Execute(config_sh+' set '+params.ambari_server_host+' '+params.cluster_name+' hive-site "hive.metastore.uris" "'+params.data_plane_hive_metastore_uri+'"')
 
+    requests.put('http://'+params.ambari_server_host+':'+params.ambari_server_port+'/api/v1/clusters/'+params.cluster_name+'/services/HIVE', auth=('admin', 'admin'),headers={'X-Requested-By':'ambari'},data=('{"RequestInfo": {"context": "Stop HIVE"}, "ServiceInfo": {"state": "INSTALLED"}}')
+    
+    time.sleep(2)
+    requests.put('http://'+params.ambari_server_host+':'+params.ambari_server_port+'/api/v1/clusters/'+params.cluster_name+'/services/STORM', auth=('admin', 'admin'),headers={'X-Requested-By':'ambari'},data=('{"RequestInfo": {"context": "Stop STORM"}, "ServiceInfo": {"state": "INSTALLED"}}')
+    
+    time.sleep(2)
+    requests.put('http://'+params.ambari_server_host+':'+params.ambari_server_port+'/api/v1/clusters/'+params.cluster_name+'/services/SQOOP', auth=('admin', 'admin'),headers={'X-Requested-By':'ambari'},data=('{"RequestInfo": {"context": "Stop SQOOP"}, "ServiceInfo": {"state": "INSTALLED"}}')
+    
+    time.sleep(2)
+    requests.put('http://'+params.ambari_server_host+':'+params.ambari_server_port+'/api/v1/clusters/'+params.cluster_name+'/services/HIVE', auth=('admin', 'admin'),headers={'X-Requested-By':'ambari'},data=('{"RequestInfo": {"context": "Start HIVE"}, "ServiceInfo": {"state": "STARTED"}}')
+    
+    time.sleep(2)
+    requests.put('http://'+params.ambari_server_host+':'+params.ambari_server_port+'/api/v1/clusters/'+params.cluster_name+'/services/STORM', auth=('admin', 'admin'),headers={'X-Requested-By':'ambari'},data=('{"RequestInfo": {"context": "Start STORM"}, "ServiceInfo": {"state": "STARTED"}}')
+    
+    time.sleep(2)
+    requests.put('http://'+params.ambari_server_host+':'+params.ambari_server_port+'/api/v1/clusters/'+params.cluster_name+'/services/SQOOP', auth=('admin', 'admin'),headers={'X-Requested-By':'ambari'},data=('{"RequestInfo": {"context": "Start SQOOP"}, "ServiceInfo": {"state": "STARTED"}}')
+
   def status(self, env):
     raise ClientComponentHasNoStatus()
 
@@ -121,7 +138,11 @@ class DataPlaneClient(Script):
   def data_plane_synch(self, env):
     import params
     env.set_params(params)
-    Execute('echo Restarting Services to refresh configurations...')
+    os.chdir(params.demo_install_dir)
+    Execute('./redeployApplication.sh '+params.nifi_host+' '+params.nifi_port+' '+params.data_plane_atlas_host+' '+params.atlas_port+' '+params.data_plane_hive_server_host+' '+params.hive_server_port)
+
+  def holder():
+        Execute('echo Restarting Services to refresh configurations...')
     #import startService
     #import stopService
     #stopService('HIVE',params.ambari_server_host,params.ambari_server_port,params.cluster_name)
@@ -215,9 +236,6 @@ class DataPlaneClient(Script):
         Execute('echo Service SQOOP started...')
     elif service_status == 'STARTED':
         Execute('echo Service SQOOP Already Started')
-
-    os.chdir(params.demo_install_dir)
-    Execute('./redeployApplication.sh '+params.nifi_host+' '+params.nifi_port+' '+params.data_plane_atlas_host+' '+params.atlas_port+' '+params.data_plane_hive_server_host+' '+params.hive_server_port)
 
 if __name__ == "__main__":
   DataPlaneClient().execute()
