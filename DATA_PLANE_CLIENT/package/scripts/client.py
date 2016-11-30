@@ -61,7 +61,7 @@ class DataPlaneClient(Script):
             shutil.copy(full_file_name, dest_dir)
      
     Execute('echo Setting Hive Plugin configuration')
-    config_sh = params.install_dir+'/Utils/DATA_PLANE_CLIENT/package/scripts/configs.sh
+    config_sh = params.install_dir+'/Utils/DATA_PLANE_CLIENT/package/scripts/configs.sh'
     Execute(config_sh+' set '+params.ambari_server_host+' '+params.cluster_name+' hive-site hive.security.authorization.enabled true')
 
     Execute(config_sh+' set '+params.ambari_server_host+' '+params.cluster_name+' hive-site hive.conf.restricted.list hive.security.authorization.enabled,hive.security.authorization.manager,hive.security.authenticator.manager')
