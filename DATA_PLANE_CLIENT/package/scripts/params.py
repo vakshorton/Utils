@@ -9,8 +9,10 @@ config = Script.get_config()
 install_dir = config['configurations']['data-plane-config']['install_dir']
 download_url = config['configurations']['data-plane-config']['download_url']
 data_plane_ambari_host = config['configurations']['data-plane-config']['data_plane_ambari_host']
-
 demo_install_dir = config['configurations']['control-config']['democontrol.install_dir']
+
+ambari_server_host = str(master_configs['ambari_server_host'][0])
+ambari_server_port = 8080
 
 data_plane_cluster_name = str(json.loads(requests.get('http://'+data_plane_ambari_host+':'+ambari_server_port+'/api/v1/clusters', auth=('admin', 'admin')).content).get('items')[0].get('Clusters').get('cluster_name'))
 
@@ -19,8 +21,6 @@ cluster_name = config['configurations']['application-properties']['atlas.cluster
 stack_version_unformatted = config['hostLevelParams']['stack_version']
 
 master_configs = config['clusterHostInfo']
-ambari_server_host = str(master_configs['ambari_server_host'][0])
-ambari_server_port = 8080
 namenode_host =  str(master_configs['namenode_host'][0])
 namenode_port = get_port_from_url(config['configurations']['core-site']['fs.defaultFS'])
 hive_server_host = str(master_configs['hive_server_host'][0])
