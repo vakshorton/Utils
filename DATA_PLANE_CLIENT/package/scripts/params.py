@@ -10,7 +10,7 @@ install_dir = config['configurations']['data-plane-config']['install_dir']
 download_url = config['configurations']['data-plane-config']['download_url']
 data_plane_ambari_host = config['configurations']['data-plane-config']['data_plane_ambari_host']
 
-demo_install_dir = ['configurations']['control-config']['democontrol.install_dir']
+demo_install_dir = config['configurations']['control-config']['democontrol.install_dir']
 
 data_plane_cluster_name = str(json.loads(requests.get('http://'+data_plane_ambari_host+':'+ambari_server_port+'/api/v1/clusters', auth=('admin', 'admin')).content).get('items')[0].get('Clusters').get('cluster_name'))
 
