@@ -17,7 +17,8 @@ ambari_server_port = '8080'
 
 data_plane_cluster_name = str(json.loads(requests.get('http://'+data_plane_ambari_host+':'+ambari_server_port+'/api/v1/clusters', auth=('admin', 'admin')).content).get('items')[0].get('Clusters').get('cluster_name'))
 
-cluster_name = config['configurations']['application-properties']['atlas.cluster.name']
+#cluster_name = config['configurations']['application-properties']['atlas.cluster.name']
+cluster_name = str(json.loads(requests.get('http://'+ambari_server_host+':'+ambari_server_port+'/api/v1/clusters', auth=('admin', 'admin')).content).get('items')[0].get('Clusters').get('cluster_name'))
 stack_version_unformatted = config['hostLevelParams']['stack_version']
 
 master_configs = config['clusterHostInfo']
