@@ -111,7 +111,17 @@ class DataPlaneClient(Script):
 
     Execute(config_sh+' set '+params.ambari_server_host+' '+params.cluster_name+' hive-site "hive.metastore.uris" "'+params.data_plane_hive_metastore_uri+'"')
 
-    Execute('echo Restarting Services to refresh configurations...')
+  def status(self, env):
+    raise ClientComponentHasNoStatus()
+
+  def configure(self, env):
+    import params
+    env.set_params(params)
+
+  def synchToDataPlane(self, env):
+    import params
+    env.set_params(params)
+        Execute('echo Restarting Services to refresh configurations...')
     
     #import startService
     #import stopService
@@ -207,16 +217,6 @@ class DataPlaneClient(Script):
     elif service_status == 'STARTED':
         Execute('echo Service SQOOP Already Started')
 
-  def status(self, env):
-    raise ClientComponentHasNoStatus()
-
-  def configure(self, env):
-    import params
-    env.set_params(params)
-
-  def synchToDataPlane(self, env):
-    import params
-    env.set_params(params)
     os.chdir(params.demo_install_dir)
     Execute('./redeployApplication.sh '+params.nifi_host+' '+params.nifi_port+' '+params.data_plane_atlas_host+' '+params.atlas_port+' '+params.data_plane_hive_server_host+' '+params.hive_server_port)
 
