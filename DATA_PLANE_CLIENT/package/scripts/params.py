@@ -11,12 +11,12 @@ download_url = config['configurations']['data-plane-config']['download_url']
 data_plane_ambari_host = config['configurations']['data-plane-config']['data_plane_ambari_host']
 demo_install_dir = config['configurations']['control-config']['democontrol.install_dir']
 
+master_configs = config['clusterHostInfo']
 ambari_server_host = str(master_configs['ambari_server_host'][0])
 ambari_server_port = 8080
 
 data_plane_cluster_name = str(json.loads(requests.get('http://'+data_plane_ambari_host+':'+ambari_server_port+'/api/v1/clusters', auth=('admin', 'admin')).content).get('items')[0].get('Clusters').get('cluster_name'))
 
-master_configs = config['clusterHostInfo']
 cluster_name = config['configurations']['application-properties']['atlas.cluster.name']
 stack_version_unformatted = config['hostLevelParams']['stack_version']
 
