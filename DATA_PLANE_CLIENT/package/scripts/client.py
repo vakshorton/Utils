@@ -121,8 +121,7 @@ class DataPlaneClient(Script):
   def synchToDataPlane(self, env):
     import params
     env.set_params(params)
-        Execute('echo Restarting Services to refresh configurations...')
-    
+    Execute('echo Restarting Services to refresh configurations...')
     #import startService
     #import stopService
     #stopService('HIVE',params.ambari_server_host,params.ambari_server_port,params.cluster_name)
