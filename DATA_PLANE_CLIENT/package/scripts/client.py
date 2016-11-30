@@ -28,7 +28,7 @@ class DataPlaneClient(Script):
     Execute('echo data plane cluster name: ' + params.data_plane_cluster_name)
     Execute('echo data plane namenode host: ' + params.data_plane_namenode_host)
     Execute('echo data plane zookeeper host: ' + params.data_plane_zookeeper_host)
-    Execute('echo data plane meta store uri: ' + params.data_plane_meta_store_uri)
+    Execute('echo data plane meta store uri: ' + params.data_plane_hive_metastore_uri)
     Execute('echo data plane hive server host: ' + params.data_plane_hive_server_host)
     Execute('echo data plane atlas host: ' + params.data_plane_atlas_host)
     Execute('echo data plane kafka host: ' + params.data_plane_kafka_host)
