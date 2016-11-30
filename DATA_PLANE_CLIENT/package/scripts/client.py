@@ -63,7 +63,7 @@ class DataPlaneClient(Script):
     Execute('echo Setting Hive Plugin configuration')
     Execute('/var/lib/ambari-server/resources/scripts/configs.sh set '+params.data_plane_ambari_host+' '+params.data_plane_cluster_name+' hive-site hive.security.authorization.enabled true')
 
-    Execute('/var/lib/ambari-server/resources/scripts/configs.sh set '+params.data_plane_ambari_host+' '+parmas.data_plane_cluster_name+' hive-site hive.conf.restricted.list hive.security.authorization.enabled,hive.security.authorization.manager,hive.security.authenticator.manager')
+    Execute('/var/lib/ambari-server/resources/scripts/configs.sh set '+params.data_plane_ambari_host+' '+params.data_plane_cluster_name+' hive-site hive.conf.restricted.list hive.security.authorization.enabled,hive.security.authorization.manager,hive.security.authenticator.manager')
 
     Execute('/var/lib/ambari-server/resources/scripts/configs.sh set '+params.data_plane_ambari_host+' '+params.data_plane_cluster_name+' hiveserver2-site hive.security.authorization.enabled true')
 
