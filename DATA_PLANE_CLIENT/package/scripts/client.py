@@ -45,12 +45,12 @@ class DataPlaneClient(Script):
     Execute('sed -r -i "s;\{\{ZK_HOST\}\};'+params.data_plane_zookeeper_host+';" '+ src_dir+'/ranger-hive-audit.xml')
     Execute('sed -r -i "s;\{\{NAMENODE_HOST\}\};'+params.data_plane_namenode_host+';" '+ src_dir+'/ranger-hive-audit.xml')
     Execute('sed -r -i "s;\{\{RANGER_URL\}\};http://'+params.data_plane_ranger_host+':'+params.ranger_port+';" '+ src_dir+'/ranger-hive-security.xml')
-    Execute('sed -r -i "s;\{\{REPO_NAME\}\};'+params.data_plane_ranger_repo+';" '+ src_dir+'/ranger-hive-security.xml')
+    Execute('sed -r -i "s;\{\{REPO_NAME\}\};'+params.data_plane_ranger_hive_repo+';" '+ src_dir+'/ranger-hive-security.xml')
 
     Execute('sed -r -i "s;\{\{ZK_HOST\}\};'+params.data_plane_zookeeper_host+';" '+ src_dir+'/ranger-hive-audit')
     Execute('sed -r -i "s;\{\{NAMENODE_HOST\}\};'+params.data_plane_namenode_host+';" '+ src_dir+'/ranger-hive-audit')
     Execute('sed -r -i "s;\{\{RANGER_URL\}\};http://'+params.data_plane_ranger_host+':'+params.ranger_port+';" '+ src_dir+'/ranger-hive-security')
-    Execute('sed -r -i "s;\{\{REPO_NAME\}\};'+params.data_plane_ranger_repo+';" '+ src_dir+'/ranger-hive-security')
+    Execute('sed -r -i "s;\{\{REPO_NAME\}\};'+params.data_plane_ranger_hive_repo+';" '+ src_dir+'/ranger-hive-security')
     
     Execute('echo Copying configuration files to Hive Server conf directory')
     dest_dir = ('/usr/hdp/current/hive-server2/conf/conf.server')
