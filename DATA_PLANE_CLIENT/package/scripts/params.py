@@ -13,7 +13,7 @@ demo_install_dir = config['configurations']['control-config']['democontrol.insta
 
 master_configs = config['clusterHostInfo']
 ambari_server_host = str(master_configs['ambari_server_host'][0])
-ambari_server_port = 8080
+ambari_server_port = '8080'
 
 data_plane_cluster_name = str(json.loads(requests.get('http://'+data_plane_ambari_host+':'+ambari_server_port+'/api/v1/clusters', auth=('admin', 'admin')).content).get('items')[0].get('Clusters').get('cluster_name'))
 
@@ -24,7 +24,7 @@ master_configs = config['clusterHostInfo']
 namenode_host =  str(master_configs['namenode_host'][0])
 namenode_port = get_port_from_url(config['configurations']['core-site']['fs.defaultFS'])
 hive_server_host = str(master_configs['hive_server_host'][0])
-hive_server_port = 10000
+hive_server_port = '10000'
 hive_metastore_host = str(master_configs['hive_metastore_host'][0])
 hive_metastore_port = get_port_from_url(config['configurations']['hive-site']['hive.metastore.uris'])
 hive_metastore_uri = 'thrift://'+hive_metastore_host+':'+hive_metastore_port
@@ -39,7 +39,7 @@ else:
   kafka_port = get_port_from_url(config['configurations']['kafka-broker']['listeners'])
 
 nifi_host = str(master_configs['nifi_master_hosts'][0])
-nifi_port = 9090
+nifi_port = '9090'
 
 data_plane_hive_server_host = str(json.loads(requests.get('http://'+data_plane_ambari_host+':'+ambari_server_port+'/api/v1/clusters/'+data_plane_cluster_name+'/services/HIVE/components/HIVE_SERVER', auth=('admin', 'admin')).content).get('host_components')[0].get('HostRoles').get('host_name'))
 
