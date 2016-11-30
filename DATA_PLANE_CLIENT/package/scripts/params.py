@@ -41,6 +41,8 @@ else:
 nifi_host = str(master_configs['nifi_master_hosts'][0])
 nifi_port = '9090'
 
+ranger_port = '6080'
+
 data_plane_hive_server_host = str(json.loads(requests.get('http://'+data_plane_ambari_host+':'+ambari_server_port+'/api/v1/clusters/'+data_plane_cluster_name+'/services/HIVE/components/HIVE_SERVER', auth=('admin', 'admin')).content).get('host_components')[0].get('HostRoles').get('host_name'))
 
 data_plane_hive_metastore_host = str(json.loads(requests.get('http://'+data_plane_ambari_host+':'+ambari_server_port+'/api/v1/clusters/'+data_plane_cluster_name+'/services/HIVE/components/HIVE_METASTORE', auth=('admin', 'admin')).content).get('host_components')[0].get('HostRoles').get('host_name')) 

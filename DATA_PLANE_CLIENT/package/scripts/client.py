@@ -40,7 +40,7 @@ class DataPlaneClient(Script):
     
     Execute('echo Install and configure Ranger Hive Plugin')
     Execute('echo Modify configuration files')
-    src_dir = params.install_dir+'/Util/DATA_PLANE_CLIENT/package/configuration'
+    src_dir = params.install_dir+'/Utils/DATA_PLANE_CLIENT/package/configuration'
     
     Execute('sed -r -i "s;\{\{ZK_HOST\}\};'+params.data_plane_zookeeper_host+';" '+ src_dir+'/ranger-hive-audit.xml')
     Execute('sed -r -i "s;\{\{NAMENODE_HOST\}\};'+params.data_plane_namenode_host+';" '+ src_dir+'/ranger-hive-audit.xml')
