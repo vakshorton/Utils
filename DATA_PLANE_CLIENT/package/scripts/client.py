@@ -108,17 +108,17 @@ class DataPlaneClient(Script):
     Execute('/var/lib/ambari-server/resources/scripts/configs.sh set '+params.ambari_server_host+' '+params.cluster_name+' hive-site "hive.metastore.uris" "'+params.data_plane_hive_metastore_uri+'"')
 
     Execute('echo Restarting Services to refresh configurations...')
-    requests.put('http://'+params.ambari_server_host+':'+ambari_server_port+'/api/v1/clusters/'+params.cluster_name+'/services/HIVE', auth=('admin', 'admin'),headers={'X-Requested-By':'ambari'},data=('{"RequestInfo": {"context": "Stop Hive"}, "ServiceInfo": {"state": "INSTALLED"}}'))
+    requests.put('http://'+params.ambari_server_host+':'+params.ambari_server_port+'/api/v1/clusters/'+params.cluster_name+'/services/HIVE', auth=('admin', 'admin'),headers={'X-Requested-By':'ambari'},data=('{"RequestInfo": {"context": "Stop Hive"}, "ServiceInfo": {"state": "INSTALLED"}}'))
 
-    requests.put('http://'+params.ambari_server_host+':'+ambari_server_port+'/api/v1/clusters/'+params.cluster_name+'/services/STORM', auth=('admin', 'admin'),headers={'X-Requested-By':'ambari'},data=('{"RequestInfo": {"context": "Stop Storm"}, "ServiceInfo": {"state": "INSTALLED"}}'))
+    requests.put('http://'+params.ambari_server_host+':'+params.ambari_server_port+'/api/v1/clusters/'+params.cluster_name+'/services/STORM', auth=('admin', 'admin'),headers={'X-Requested-By':'ambari'},data=('{"RequestInfo": {"context": "Stop Storm"}, "ServiceInfo": {"state": "INSTALLED"}}'))
 
-    requests.put('http://'+params.ambari_server_host+':'+ambari_server_port+'/api/v1/clusters/'+params.cluster_name+'/services/SQOOP', auth=('admin', 'admin'),headers={'X-Requested-By':'ambari'},data=('{"RequestInfo": {"context": "Stop Sqoop"}, "ServiceInfo": {"state": "INSTALLED"}}'))
+    requests.put('http://'+params.ambari_server_host+':'+params.ambari_server_port+'/api/v1/clusters/'+params.cluster_name+'/services/SQOOP', auth=('admin', 'admin'),headers={'X-Requested-By':'ambari'},data=('{"RequestInfo": {"context": "Stop Sqoop"}, "ServiceInfo": {"state": "INSTALLED"}}'))
 
-    requests.put('http://'+params.ambari_server_host+':'+ambari_server_port+'/api/v1/clusters/'+params.cluster_name+'/services/HIVE', auth=('admin', 'admin'),headers={'X-Requested-By':'ambari'},data=('{"RequestInfo": {"context": "Start Hive"}, "ServiceInfo": {"state": "STARTED"}}'))
+    requests.put('http://'+params.ambari_server_host+':'+params.ambari_server_port+'/api/v1/clusters/'+params.cluster_name+'/services/HIVE', auth=('admin', 'admin'),headers={'X-Requested-By':'ambari'},data=('{"RequestInfo": {"context": "Start Hive"}, "ServiceInfo": {"state": "STARTED"}}'))
 
-    requests.put('http://'+params.ambari_server_host+':'+ambari_server_port+'/api/v1/clusters/'+params.cluster_name+'/services/STORM', auth=('admin', 'admin'),headers={'X-Requested-By':'ambari'},data=('{"RequestInfo": {"context": "Start Storm"}, "ServiceInfo": {"state": "STARTED"}}'))
+    requests.put('http://'+params.ambari_server_host+':'+params.ambari_server_port+'/api/v1/clusters/'+params.cluster_name+'/services/STORM', auth=('admin', 'admin'),headers={'X-Requested-By':'ambari'},data=('{"RequestInfo": {"context": "Start Storm"}, "ServiceInfo": {"state": "STARTED"}}'))
 
-    requests.put('http://'+params.ambari_server_host+':'+ambari_server_port+'/api/v1/clusters/'+params.cluster_name+'/services/SQOOP', auth=('admin', 'admin'),headers={'X-Requested-By':'ambari'},data=('{"RequestInfo": {"context": "Start Sqoop"}, "ServiceInfo": {"state": "STARTED"}}'))
+    requests.put('http://'+params.ambari_server_host+':'+params.ambari_server_port+'/api/v1/clusters/'+params.cluster_name+'/services/SQOOP', auth=('admin', 'admin'),headers={'X-Requested-By':'ambari'},data=('{"RequestInfo": {"context": "Start Sqoop"}, "ServiceInfo": {"state": "STARTED"}}'))
 
     
   def status(self, env):
