@@ -6,7 +6,7 @@ class DataPlaneClient(Script):
   def install(self, env):
     self.configure(env)
     import params
-    #debug info
+    Execute('echo Show Params variables')
     Execute('echo list of config dump: ' + str(', '.join(params.list_of_configs)))
     Execute('echo master config dump: ' + str(', '.join(params.master_configs)))
     Execute('echo host level config dump: ' + str(', '.join(params.list_of_host_level_params)))
@@ -42,15 +42,15 @@ class DataPlaneClient(Script):
     Execute('echo Modify configuration files')
     src_dir = params.install_dir+'/Util/DATA_PLANE_CLIENT/package/configuration'
     
-    Execute('sed -r -i "s;\{\{ZK_HOST\}\};'+params.data_plane_zookeeper_host+';"'+ src_dir+'/RANGER_HIVE_PLUGIN/package/configuration/ranger-hive-audit.xml')
-    Execute('sed -r -i "s;\{\{NAMENODE_HOST\}\};'+params.data_plane_namenode_host+';"'+ src_dir+'/RANGER_HIVE_PLUGIN/package/configuration/ranger-hive-audit.xml')
-    Execute('sed -r -i "s;\{\{RANGER_URL\}\};http://'+params.data_plane_ranger_host+':'+params.ranger_port+';"'+ src_dir+'/RANGER_HIVE_PLUGIN/package/configuration/ranger-hive-security.xml')
-    Execute('sed -r -i "s;\{\{REPO_NAME\}\};'+params.data_plane_ranger_repo+';"'+ src_dir+'/RANGER_HIVE_PLUGIN/package/configuration/ranger-hive-security.xml')
+    Execute('sed -r -i "s;\{\{ZK_HOST\}\};'+params.data_plane_zookeeper_host+';"'+ src_dir+'/ranger-hive-audit.xml')
+    Execute('sed -r -i "s;\{\{NAMENODE_HOST\}\};'+params.data_plane_namenode_host+';"'+ src_dir+'/ranger-hive-audit.xml')
+    Execute('sed -r -i "s;\{\{RANGER_URL\}\};http://'+params.data_plane_ranger_host+':'+params.ranger_port+';"'+ src_dir+'/ranger-hive-security.xml')
+    Execute('sed -r -i "s;\{\{REPO_NAME\}\};'+params.data_plane_ranger_repo+';"'+ src_dir+'/ranger-hive-security.xml')
 
-    Execute('sed -r -i "s;\{\{ZK_HOST\}\};'+params.data_plane_zookeeper_host+';"'+ src_dir+'/hive-ranger-config/ranger-hive-audit')
-    Execute('sed -r -i "s;\{\{NAMENODE_HOST\}\};'+params.data_plane_namenode_host+';"'+ src_dir+'/hive-ranger-config/ranger-hive-audit')
-    Execute('sed -r -i "s;\{\{RANGER_URL\}\};http://'+params.data_plane_ranger_host+':'+params.ranger_port+';"'+ src_dir+'/hive-ranger-config/ranger-hive-security')
-    Execute('sed -r -i "s;\{\{REPO_NAME\}\};'+params.data_plane_ranger_repo+';"'+ src_dir+'/hive-ranger-config/ranger-hive-security')
+    Execute('sed -r -i "s;\{\{ZK_HOST\}\};'+params.data_plane_zookeeper_host+';"'+ src_dir+'/ranger-hive-audit')
+    Execute('sed -r -i "s;\{\{NAMENODE_HOST\}\};'+params.data_plane_namenode_host+';"'+ src_dir+'/ranger-hive-audit')
+    Execute('sed -r -i "s;\{\{RANGER_URL\}\};http://'+params.data_plane_ranger_host+':'+params.ranger_port+';"'+ src_dir+'/ranger-hive-security')
+    Execute('sed -r -i "s;\{\{REPO_NAME\}\};'+params.data_plane_ranger_repo+';"'+ src_dir+'/ranger-hive-security')
     
     Execute('echo Copying configuration files to Hive Server conf directory')
     dest_dir = ('/usr/hdp/current/hive-server2/conf/conf.server')
@@ -71,13 +71,13 @@ class DataPlaneClient(Script):
 
     Execute('/var/lib/ambari-server/resources/scripts/configs.sh set '+params.data_plane_ambari_host+' '+params.data_plane_cluster_name+' hiveserver2-site hive.security.authenticator.manager org.apache.hadoop.hive.ql.security.SessionStateUserAuthenticator')
     
-    Execute('/var/lib/ambari-server/resources/scripts/configs.sh set '+params.data_plane_ambari_host+' '+params.data_plane_cluster_name+' ranger-hive-audit '+ src_dir+'/hive-ranger-config/ranger-hive-audit')
+    Execute('/var/lib/ambari-server/resources/scripts/configs.sh set '+params.data_plane_ambari_host+' '+params.data_plane_cluster_name+' ranger-hive-audit '+ src_dir+'/ranger-hive-audit')
 
-    Execute('/var/lib/ambari-server/resources/scripts/configs.sh set '+params.data_plane_ambari_host+' '+params.data_plane_cluster_name+' ranger-hive-plugin-properties '+ src_dir+'/hive-ranger-config/ranger-hive-plugin-properties')
+    Execute('/var/lib/ambari-server/resources/scripts/configs.sh set '+params.data_plane_ambari_host+' '+params.data_plane_cluster_name+' ranger-hive-plugin-properties '+ src_dir+'/ranger-hive-plugin-properties')
 
-    Execute('/var/lib/ambari-server/resources/scripts/configs.sh set '+params.data_plane_ambari_host+' '+params.data_plane_cluster_name+' ranger-hive-policymgr-ssl '+ src_dir+'/hive-ranger-config/ranger-hive-policymgr-ssl')
+    Execute('/var/lib/ambari-server/resources/scripts/configs.sh set '+params.data_plane_ambari_host+' '+params.data_plane_cluster_name+' ranger-hive-policymgr-ssl '+ src_dir+'/ranger-hive-policymgr-ssl')
 
-    Execute('/var/lib/ambari-server/resources/scripts/configs.sh set '+params.data_plane_ambari_host+' '+params.data_plane_cluster_name+' ranger-hive-security '+ src_dir+'/hive-ranger-config/ranger-hive-security')
+    Execute('/var/lib/ambari-server/resources/scripts/configs.sh set '+params.data_plane_ambari_host+' '+params.data_plane_cluster_name+' ranger-hive-security '+ src_dir+'/ranger-hive-security')
 
     Execute('echo Setting Hive Atlas Client Configuration...')
     Execute('/var/lib/ambari-server/resources/scripts/configs.sh set '+params.data_plane_ambari_host+' '+params.data_plane_cluster_name+' hive-site "atlas.rest.address" "'+params.data_plane_atlas_host+':'+params.atlas_port+'"')
@@ -120,18 +120,19 @@ class DataPlaneClient(Script):
 
     requests.put('http://'+params.ambari_server_host+':'+ambari_server_port+'/api/v1/clusters/'+params.cluster_name+'/services/SQOOP', auth=('admin', 'admin'),headers={'X-Requested-By':'ambari'},data=('{"RequestInfo": {"context": "Start Sqoop"}, "ServiceInfo": {"state": "STARTED"}}'))
 
+    
   def status(self, env):
     raise ClientComponentHasNoStatus()
-    
+
   def configure(self, env):
     import params
     env.set_params(params)
-    
+
   def synchToDataPlane(self, env):
     import params
     env.set_params(params)
     os.chdir(params.demo_install_dir)
     Execute('./redeployApplication.sh '+params.nifi_host+' '+params.nifi_port+' '+params.data_plane_atlas_host+' '+params.atlas_port+' '+params.data_plane_hive_server_host+' '+params.hive_server_port)
-    
-  if __name__ == "__main__":
-    DataPlaneClient().execute()
+
+if __name__ == "__main__":
+  DataPlaneClient().execute()
