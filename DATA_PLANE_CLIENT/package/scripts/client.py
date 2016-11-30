@@ -125,10 +125,10 @@ class DataPlaneClient(Script):
             if task_status == 'COMPLETED':
                 loop_escape = True
                 time.sleep(2)
-            Execute('echo Stop Service '+service+' Task Status '+task_status)
-        Execute('echo Service '+service+' Stopped...')
+            Execute('echo Stop Service HIVE Task Status '+task_status)
+        Execute('echo Service HIVE Stopped...')
     elif service_status == 'INSTALLED':
-        Execute('echo Service '+service+' Already Stopped')
+        Execute('echo Service HIVE Already Stopped')
     time.sleep(2)
     #stopService('STORM',params.ambari_server_host,params.ambari_server_port,params.cluster_name)
     
