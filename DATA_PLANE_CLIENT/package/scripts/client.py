@@ -144,7 +144,7 @@ class DataPlaneClient(Script):
     Execute('./redeployApplication.sh '+params.nifi_host+' '+params.nifi_port+' '+params.data_plane_atlas_host+' '+params.atlas_port+' '+params.data_plane_hive_server_host+' '+params.hive_server_port)
 
   def holder():
-        Execute('echo Restarting Services to refresh configurations...')
+    Execute('echo Restarting Services to refresh configurations...')
     #import startService
     #import stopService
     #stopService('HIVE',params.ambari_server_host,params.ambari_server_port,params.cluster_name)
