@@ -113,15 +113,99 @@ class DataPlaneClient(Script):
 
     Execute('echo Restarting Services to refresh configurations...')
     
-    import startService
-    import stopService
-    stopService('HIVE',params.ambari_server_host,params.ambari_server_port,params.cluster_name)
-    stopService('STORM',params.ambari_server_host,params.ambari_server_port,params.cluster_name)
-    stopService('SQOOP',params.ambari_server_host,params.ambari_server_port,params.cluster_name)
+    #import startService
+    #import stopService
+    #stopService('HIVE',params.ambari_server_host,params.ambari_server_port,params.cluster_name)
+    service_status = str(json.loads(requests.get('http://'+params.ambari_server_host+':'+params.ambari_server_port+'/api/v1/clusters/'+params.cluster_name+'/services/HIVE', auth=('admin', 'admin')).content).get('ServiceInfo').get('state'))
+    if service_status == 'STARTED':
+        task_id = str(json.loads(requests.put('http://'+params.ambari_server_host+':'+params.ambari_server_port+'/api/v1/clusters/'+params.cluster_name+'/services/HIVE', auth=('admin', 'admin'),headers={'X-Requested-By':'ambari'},data=('{"RequestInfo": {"context": "Stop HIVE"}, "ServiceInfo": {"state": "INSTALLED"}}')).content).get('Requests').get('id'))
+        loop_escape = False
+        while loop_escape != True:
+            task_status = str(json.loads(requests.get('http://'+params.ambari_server_host+':'+params.ambari_server_port+'/api/v1/clusters/'+params.cluster_name+'/requests/'+task_id, auth=('admin', 'admin')).content).get('Requests').get('request_status'))
+            if task_status == 'COMPLETED':
+                loop_escape = True
+                time.sleep(2)
+            Execute('echo Stop Service '+service+' Task Status '+task_status)
+        Execute('echo Service '+service+' Stopped...')
+    elif service_status == 'INSTALLED':
+        Execute('echo Service '+service+' Already Stopped')
+    time.sleep(2)
+    #stopService('STORM',params.ambari_server_host,params.ambari_server_port,params.cluster_name)
+    
+    service_status = str(json.loads(requests.get('http://'+params.ambari_server_host+':'+params.ambari_server_port+'/api/v1/clusters/'+params.cluster_name+'/services/STORM', auth=('admin', 'admin')).content).get('ServiceInfo').get('state'))
+    if service_status == 'STARTED':
+        task_id = str(json.loads(requests.put('http://'+params.ambari_server_host+':'+params.ambari_server_port+'/api/v1/clusters/'+params.cluster_name+'/services/STORM', auth=('admin', 'admin'),headers={'X-Requested-By':'ambari'},data=('{"RequestInfo": {"context": "Stop STORM"}, "ServiceInfo": {"state": "INSTALLED"}}')).content).get('Requests').get('id'))
+        loop_escape = False
+        while loop_escape != True:
+            task_status = str(json.loads(requests.get('http://'+params.ambari_server_host+':'+params.ambari_server_port+'/api/v1/clusters/'+params.cluster_name+'/requests/'+task_id, auth=('admin', 'admin')).content).get('Requests').get('request_status'))
+            if task_status == 'COMPLETED':
+                loop_escape = True
+                time.sleep(2)
+            Execute('echo Stop Service '+service+' Task Status '+task_status)
+        Execute('echo Service STORM Stopped...')
+    elif service_status == 'INSTALLED':
+        Execute('echo Service STORM Already Stopped')
+    time.sleep(2)
+    #stopService('SQOOP',params.ambari_server_host,params.ambari_server_port,params.cluster_name)
+    service_status = str(json.loads(requests.get('http://'+params.ambari_server_host+':'+params.ambari_server_port+'/api/v1/clusters/'+params.cluster_name+'/services/SQOOP', auth=('admin', 'admin')).content).get('ServiceInfo').get('state'))
+    if service_status == 'STARTED':
+        task_id = str(json.loads(requests.put('http://'+params.ambari_server_host+':'+params.ambari_server_port+'/api/v1/clusters/'+params.cluster_name+'/services/SQOOP', auth=('admin', 'admin'),headers={'X-Requested-By':'ambari'},data=('{"RequestInfo": {"context": "Stop SQOOP"}, "ServiceInfo": {"state": "INSTALLED"}}')).content).get('Requests').get('id'))
+        loop_escape = False
+        while loop_escape != True:
+            task_status = str(json.loads(requests.get('http://'+params.ambari_server_host+':'+params.ambari_server_port+'/api/v1/clusters/'+params.cluster_name+'/requests/'+task_id, auth=('admin', 'admin')).content).get('Requests').get('request_status'))
+            if task_status == 'COMPLETED':
+                loop_escape = True
+                time.sleep(2)
+            Execute('echo Stop Service '+service+' Task Status '+task_status)
+        Execute('echo Service SQOOP Stopped...')
+    elif service_status == 'INSTALLED':
+        Execute('echo Service SQOOP Already Stopped')
+    
     time.sleep(1)
-    startService('HIVE',params.ambari_server_host,params.ambari_server_port,params.cluster_name)
-    startService('STORM',params.ambari_server_host,params.ambari_server_port,params.cluster_name)
-    startService('SQOOP',params.ambari_server_host,params.ambari_server_port,params.cluster_name)
+    #startService('HIVE',params.ambari_server_host,params.ambari_server_port,params.cluster_name)
+    service_status = str(json.loads(requests.get('http://'+params.ambari_server_host+':'+params.ambari_server_port+'/api/v1/clusters/'+params.cluster_name+'/services/HIVE', auth=('admin', 'admin')).content).get('ServiceInfo').get('state'))
+    if service_status == 'INSTALLED':
+        task_id = str(json.loads(requests.put('http://'+params.ambari_server_host+':'+params.ambari_server_port+'/api/v1/clusters/'+params.cluster_name+'/services/HIVE', auth=('admin', 'admin'),headers={'X-Requested-By':'ambari'},data=('{"RequestInfo": {"context": "Start HIVE"}, "ServiceInfo": {"state": "STARTED"}}')).content).get('Requests').get('id'))
+        loop_escape = False
+        while loop_escape != True:
+            task_status = str(json.loads(requests.get('http://'+params.ambari_server_host+':'+params.ambari_server_port+'/api/v1/clusters/'+params.cluster_name+'/requests/'+task_id, auth=('admin', 'admin')).content).get('Requests').get('request_status'))
+            if task_status == 'COMPLETED':
+                loop_escape = True
+                time.sleep(2)
+            Execute('echo Stop Service HIVE Task Status '+task_status)
+        Execute('echo Service HIVE started...')
+    elif service_status == 'STARTED':
+        Execute('echo Service HIVE Already Started')
+    time.sleep(2)
+    #startService('STORM',params.ambari_server_host,params.ambari_server_port,params.cluster_name)
+    service_status = str(json.loads(requests.get('http://'+params.ambari_server_host+':'+params.ambari_server_port+'/api/v1/clusters/'+params.cluster_name+'/services/STORM', auth=('admin', 'admin')).content).get('ServiceInfo').get('state'))
+    if service_status == 'INSTALLED':
+        task_id = str(json.loads(requests.put('http://'+params.ambari_server_host+':'+params.ambari_server_port+'/api/v1/clusters/'+params.cluster_name+'/services/STORM', auth=('admin', 'admin'),headers={'X-Requested-By':'ambari'},data=('{"RequestInfo": {"context": "Start STORM"}, "ServiceInfo": {"state": "STARTED"}}')).content).get('Requests').get('id'))
+        loop_escape = False
+        while loop_escape != True:
+            task_status = str(json.loads(requests.get('http://'+params.ambari_server_host+':'+params.ambari_server_port+'/api/v1/clusters/'+params.cluster_name+'/requests/'+task_id, auth=('admin', 'admin')).content).get('Requests').get('request_status'))
+            if task_status == 'COMPLETED':
+                loop_escape = True
+                time.sleep(2)
+            Execute('echo Stop Service STORM Task Status '+task_status)
+        Execute('echo Service STORM started...')
+    elif service_status == 'STARTED':
+        Execute('echo Service STORM Already Started')
+    time.sleep(2)
+    #startService('SQOOP',params.ambari_server_host,params.ambari_server_port,params.cluster_name)
+    service_status = str(json.loads(requests.get('http://'+params.ambari_server_host+':'+params.ambari_server_port+'/api/v1/clusters/'+params.cluster_name+'/services/SQOOP', auth=('admin', 'admin')).content).get('ServiceInfo').get('state'))
+    if service_status == 'INSTALLED':
+        task_id = str(json.loads(requests.put('http://'+params.ambari_server_host+':'+params.ambari_server_port+'/api/v1/clusters/'+params.cluster_name+'/services/SQOOP', auth=('admin', 'admin'),headers={'X-Requested-By':'ambari'},data=('{"RequestInfo": {"context": "Start SQOOP"}, "ServiceInfo": {"state": "STARTED"}}')).content).get('Requests').get('id'))
+        loop_escape = False
+        while loop_escape != True:
+            task_status = str(json.loads(requests.get('http://'+params.ambari_server_host+':'+params.ambari_server_port+'/api/v1/clusters/'+params.cluster_name+'/requests/'+task_id, auth=('admin', 'admin')).content).get('Requests').get('request_status'))
+            if task_status == 'COMPLETED':
+                loop_escape = True
+                time.sleep(2)
+            Execute('echo Stop Service SQOOP Task Status '+task_status)
+        Execute('echo Service SQOOP started...')
+    elif service_status == 'STARTED':
+        Execute('echo Service SQOOP Already Started')
 
   def status(self, env):
     raise ClientComponentHasNoStatus()
