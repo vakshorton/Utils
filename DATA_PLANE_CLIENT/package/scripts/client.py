@@ -141,6 +141,8 @@ class DataPlaneClient(Script):
     import params
     env.set_params(params)
     os.chdir(params.demo_install_dir)
+    Execute('. ~/.bash_profile')
+    Execute('env')
     Execute(params.demo_install_dir+'/redeployApplication.sh > redeploy.log'+params.nifi_host+' '+params.nifi_port+' '+params.data_plane_atlas_host+' '+params.atlas_port+' '+params.data_plane_hive_server_host+' '+params.hive_server_port)
 
   def holder():
