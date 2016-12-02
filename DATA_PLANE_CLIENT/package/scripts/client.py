@@ -41,6 +41,9 @@ class DataPlaneClient(Script):
     os.chdir(params.install_dir)
     Execute('git clone ' + params.download_url)
     
+    Execute('echo Creating Ranger Hive Service for this cluster in Data Plane')
+    requests.put('http://'+params.data_plane_ranger_server_host+':'+params.ranger_port+'/service/public/v2/api/service', auth=('admin', 'admin'),headers={'content-type':'application/json'},data=('{"isEnabled":true,"type":"hive","name":"'+params.data_plane_ranger_hive_repo+'","description":"","tagService":"data-plane-tag","configs":{"jdbc.url":"jdbc:hive2://'+params.data_plane_hive_server_host+':'+params.hive_server_port+'","jdbc.driverClassName":"org.apache.hive.jdbc.HiveDriver","username":"hive","password":"*****"}}'))
+    
     Execute('echo Install and configure Ranger Hive Plugin')
     Execute('echo Modify configuration files')
     src_dir = params.install_dir+'/Utils/DATA_PLANE_CLIENT/package/configuration'
@@ -64,7 +67,9 @@ class DataPlaneClient(Script):
             full_file_name = os.path.join(src_dir, file_name)
             if (os.path.isfile(full_file_name)):
                 shutil.copy(full_file_name, dest_dir)
-     
+    
+    #{"isEnabled":true,"service":"biologics-demo_hive","name":"all - database, table, column","policyType":0,"description":"Policy for all - database, table, column","isAuditEnabled":true,"resources":{"column":{"values":["*"],"isExcludes":false,"isRecursive":false},"table":{"values":["*"],"isExcludes":false,"isRecursive":false},"database":{"values":["*"],"isExcludes":false,"isRecursive":false}},"policyItems":[{"accesses":[{"type":"select","isAllowed":true},{"type":"update","isAllowed":true},{"type":"create","isAllowed":true},{"type":"drop","isAllowed":true},{"type":"alter","isAllowed":true},{"type":"index","isAllowed":true},{"type":"lock","isAllowed":true},{"type":"all","isAllowed":true}],"users":["hive","admin"],"groups":[],"conditions":[],"delegateAdmin":true}],"denyPolicyItems":[],"allowExceptions":[],"denyExceptions":[],"dataMaskPolicyItems":[],"rowFilterPolicyItems":[]}
+    
     Execute('echo Setting Hive Plugin configuration')
     config_sh = params.install_dir+'/Utils/DATA_PLANE_CLIENT/package/scripts/configs.sh'
     Execute(config_sh+' set '+params.ambari_server_host+' '+params.cluster_name+' hive-site hive.security.authorization.enabled true')

@@ -60,7 +60,8 @@ data_plane_atlas_host = str(json.loads(requests.get('http://'+data_plane_ambari_
 
 data_plane_ranger_host = str(json.loads(requests.get('http://'+data_plane_ambari_host+':'+ambari_server_port+'/api/v1/clusters/'+data_plane_cluster_name+'/services/RANGER/components/RANGER_ADMIN', auth=('admin', 'admin')).content).get('host_components')[0].get('HostRoles').get('host_name'))
 
-data_plane_ranger_hive_repo = 'data-plane_hive'
+#data_plane_ranger_hive_repo = 'data-plane_hive'
+data_plane_ranger_hive_repo = cluster_name+'_hive'
 
 list_of_configs = config['configurations']
 list_of_host_level_params = config['configurations']
