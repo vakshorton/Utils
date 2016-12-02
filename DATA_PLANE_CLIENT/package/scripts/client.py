@@ -148,7 +148,7 @@ class DataPlaneClient(Script):
     os.chdir(params.demo_install_dir)
     Execute('. ~/.bash_profile')
     Execute('env')
-    Execute(params.demo_install_dir+'/redeployApplication.sh '+params.nifi_host+' '+params.nifi_port+' '+params.data_plane_atlas_host+' '+params.atlas_port+' '+params.data_plane_hive_server_host+' '+params.hive_server_port+' &>> redeploy.log')
+    Execute(params.demo_install_dir+'/redeployApplication.sh '+params.nifi_host+' '+params.nifi_port+' '+params.data_plane_atlas_host+' '+params.atlas_port+' '+params.hive_server_host+' '+params.hive_server_port+' &>> redeploy.log')
 
   def holder():
     Execute('echo Restarting Services to refresh configurations...')
