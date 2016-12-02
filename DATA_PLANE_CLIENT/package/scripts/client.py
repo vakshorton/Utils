@@ -42,7 +42,7 @@ class DataPlaneClient(Script):
     Execute('git clone ' + params.download_url)
     
     Execute('echo Creating Ranger Hive Service for this cluster in Data Plane')
-    requests.put('http://'+params.data_plane_ranger_host+':'+params.ranger_port+'/service/public/v2/api/service', auth=('admin', 'admin'),headers={'content-type':'application/json'},data=('{"isEnabled":true,"type":"hive","name":"'+params.data_plane_ranger_hive_repo+'","description":"","tagService":"data-plane-tag","configs":{"jdbc.url":"jdbc:hive2://'+params.data_plane_hive_server_host+':'+params.hive_server_port+'","jdbc.driverClassName":"org.apache.hive.jdbc.HiveDriver","username":"hive","password":"*****"}}'))
+    print requests.post('http://'+params.data_plane_ranger_host+':'+params.ranger_port+'/service/public/v2/api/service', auth=('admin', 'admin'),headers={'content-type':'application/json'},data=('{"isEnabled":true,"type":"hive","name":"'+params.data_plane_ranger_hive_repo+'","description":"","tagService":"data-plane-tag","configs":{"jdbc.url":"jdbc:hive2://'+params.data_plane_hive_server_host+':'+params.hive_server_port+'","jdbc.driverClassName":"org.apache.hive.jdbc.HiveDriver","username":"hive","password":"*****"}}')).content
     
     Execute('echo Install and configure Ranger Hive Plugin')
     Execute('echo Modify configuration files')
@@ -126,13 +126,13 @@ class DataPlaneClient(Script):
     time.sleep(2)
     requests.put('http://'+params.ambari_server_host+':'+params.ambari_server_port+'/api/v1/clusters/'+params.cluster_name+'/services/SQOOP', auth=('admin', 'admin'),headers={'X-Requested-By':'ambari'},data=('{"RequestInfo": {"context": "Stop SQOOP"}, "ServiceInfo": {"state": "INSTALLED"}}'))
     
-    time.sleep(2)
+    time.sleep(5)
     requests.put('http://'+params.ambari_server_host+':'+params.ambari_server_port+'/api/v1/clusters/'+params.cluster_name+'/services/HIVE', auth=('admin', 'admin'),headers={'X-Requested-By':'ambari'},data=('{"RequestInfo": {"context": "Start HIVE"}, "ServiceInfo": {"state": "STARTED"}}'))
     
-    time.sleep(2)
+    time.sleep(5)
     requests.put('http://'+params.ambari_server_host+':'+params.ambari_server_port+'/api/v1/clusters/'+params.cluster_name+'/services/STORM', auth=('admin', 'admin'),headers={'X-Requested-By':'ambari'},data=('{"RequestInfo": {"context": "Start STORM"}, "ServiceInfo": {"state": "STARTED"}}'))
     
-    time.sleep(2)
+    time.sleep(1)
     requests.put('http://'+params.ambari_server_host+':'+params.ambari_server_port+'/api/v1/clusters/'+params.cluster_name+'/services/SQOOP', auth=('admin', 'admin'),headers={'X-Requested-By':'ambari'},data=('{"RequestInfo": {"context": "Start SQOOP"}, "ServiceInfo": {"state": "STARTED"}}'))
 
   def status(self, env):
