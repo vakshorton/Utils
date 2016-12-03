@@ -44,6 +44,8 @@ class DataPlaneClient(Script):
     Execute('echo Creating Ranger Hive Service for this cluster in Data Plane')
     print requests.post('http://'+params.data_plane_ranger_host+':'+params.ranger_port+'/service/public/v2/api/service', auth=('admin', 'admin'),headers={'content-type':'application/json'},data=('{"isEnabled":true,"type":"hive","name":"'+params.data_plane_ranger_hive_repo+'","description":"","tagService":"data-plane-tag","configs":{"jdbc.url":"jdbc:hive2://'+params.data_plane_hive_server_host+':'+params.hive_server_port+'","jdbc.driverClassName":"org.apache.hive.jdbc.HiveDriver","username":"hive","password":"*****"}}')).content
     
+    #{"isEnabled":true,"service":"biologics-demo_hive","name":"all - database, table, column","policyType":0,"description":"Policy for all - database, table, column","isAuditEnabled":true,"resources":{"column":{"values":["*"],"isExcludes":false,"isRecursive":false},"table":{"values":["*"],"isExcludes":false,"isRecursive":false},"database":{"values":["*"],"isExcludes":false,"isRecursive":false}},"policyItems":[{"accesses":[{"type":"select","isAllowed":true},{"type":"update","isAllowed":true},{"type":"create","isAllowed":true},{"type":"drop","isAllowed":true},{"type":"alter","isAllowed":true},{"type":"index","isAllowed":true},{"type":"lock","isAllowed":true},{"type":"all","isAllowed":true}],"users":["hive","admin"],"groups":[],"conditions":[],"delegateAdmin":true}],"denyPolicyItems":[],"allowExceptions":[],"denyExceptions":[],"dataMaskPolicyItems":[],"rowFilterPolicyItems":[]}
+    
     Execute('echo Install and configure Ranger Hive Plugin')
     Execute('echo Modify configuration files')
     src_dir = params.install_dir+'/Utils/DATA_PLANE_CLIENT/package/configuration'
@@ -61,79 +63,72 @@ class DataPlaneClient(Script):
     Execute('echo Copying configuration files to Hive Server conf directory')
     dest_dir = ('/usr/hdp/current/hive-server2/conf/conf.server')
     
-    src_files = os.listdir(src_dir)
-    if os.path.exists(src_dir):
+    if os.path.exists(dest_dir):
+        src_files = os.listdir(src_dir)
         for file_name in src_files:
             full_file_name = os.path.join(src_dir, file_name)
             if (os.path.isfile(full_file_name)):
                 shutil.copy(full_file_name, dest_dir)
+
+        Execute('echo Setting Hive Plugin configuration')
+        config_sh = params.install_dir+'/Utils/DATA_PLANE_CLIENT/package/scripts/configs.sh'
+        Execute(config_sh+' set '+params.ambari_server_host+' '+params.cluster_name+' hive-site hive.security.authorization.enabled true')
+
+        Execute(config_sh+' set '+params.ambari_server_host+' '+params.cluster_name+' hive-site hive.conf.restricted.list hive.security.authorization.enabled,hive.security.authorization.manager,hive.security.authenticator.manager')
+
+        Execute(config_sh+' set '+params.ambari_server_host+' '+params.cluster_name+' hiveserver2-site hive.security.authorization.enabled true')
+
+        Execute(config_sh+' set '+params.ambari_server_host+' '+params.cluster_name+' hiveserver2-site hive.security.authorization.manager org.apache.ranger.authorization.hive.authorizer.RangerHiveAuthorizerFactory')
+
+        Execute(config_sh+' set '+params.ambari_server_host+' '+params.cluster_name+' hiveserver2-site hive.security.authenticator.manager org.apache.hadoop.hive.ql.security.SessionStateUserAuthenticator')
     
-    #{"isEnabled":true,"service":"biologics-demo_hive","name":"all - database, table, column","policyType":0,"description":"Policy for all - database, table, column","isAuditEnabled":true,"resources":{"column":{"values":["*"],"isExcludes":false,"isRecursive":false},"table":{"values":["*"],"isExcludes":false,"isRecursive":false},"database":{"values":["*"],"isExcludes":false,"isRecursive":false}},"policyItems":[{"accesses":[{"type":"select","isAllowed":true},{"type":"update","isAllowed":true},{"type":"create","isAllowed":true},{"type":"drop","isAllowed":true},{"type":"alter","isAllowed":true},{"type":"index","isAllowed":true},{"type":"lock","isAllowed":true},{"type":"all","isAllowed":true}],"users":["hive","admin"],"groups":[],"conditions":[],"delegateAdmin":true}],"denyPolicyItems":[],"allowExceptions":[],"denyExceptions":[],"dataMaskPolicyItems":[],"rowFilterPolicyItems":[]}
-    
-    Execute('echo Setting Hive Plugin configuration')
-    config_sh = params.install_dir+'/Utils/DATA_PLANE_CLIENT/package/scripts/configs.sh'
-    Execute(config_sh+' set '+params.ambari_server_host+' '+params.cluster_name+' hive-site hive.security.authorization.enabled true')
+        Execute(config_sh+' set '+params.ambari_server_host+' '+params.cluster_name+' ranger-hive-audit '+ src_dir+'/ranger-hive-audit')
 
-    Execute(config_sh+' set '+params.ambari_server_host+' '+params.cluster_name+' hive-site hive.conf.restricted.list hive.security.authorization.enabled,hive.security.authorization.manager,hive.security.authenticator.manager')
+        Execute(config_sh+' set '+params.ambari_server_host+' '+params.cluster_name+' ranger-hive-plugin-properties '+ src_dir+'/ranger-hive-plugin-properties')
 
-    Execute(config_sh+' set '+params.ambari_server_host+' '+params.cluster_name+' hiveserver2-site hive.security.authorization.enabled true')
+        Execute(config_sh+' set '+params.ambari_server_host+' '+params.cluster_name+' ranger-hive-policymgr-ssl '+ src_dir+'/ranger-hive-policymgr-ssl')
 
-    Execute(config_sh+' set '+params.ambari_server_host+' '+params.cluster_name+' hiveserver2-site hive.security.authorization.manager org.apache.ranger.authorization.hive.authorizer.RangerHiveAuthorizerFactory')
+        Execute(config_sh+' set '+params.ambari_server_host+' '+params.cluster_name+' ranger-hive-security '+ src_dir+'/ranger-hive-security')
 
-    Execute(config_sh+' set '+params.ambari_server_host+' '+params.cluster_name+' hiveserver2-site hive.security.authenticator.manager org.apache.hadoop.hive.ql.security.SessionStateUserAuthenticator')
-    
-    Execute(config_sh+' set '+params.ambari_server_host+' '+params.cluster_name+' ranger-hive-audit '+ src_dir+'/ranger-hive-audit')
+        Execute('echo Setting Hive Atlas Client Configuration...')
+        Execute(config_sh+' set '+params.ambari_server_host+' '+params.cluster_name+' hive-site "atlas.rest.address" "'+params.data_plane_atlas_host+':'+params.atlas_port+'"')
 
-    Execute(config_sh+' set '+params.ambari_server_host+' '+params.cluster_name+' ranger-hive-plugin-properties '+ src_dir+'/ranger-hive-plugin-properties')
+        Execute(config_sh+' set '+params.ambari_server_host+' '+params.cluster_name+' hive-atlas-application.properties "atlas.kafka.bootstrap.servers" "'+params.data_plane_kafka_host+':'+params.kafka_port+'"')
 
-    Execute(config_sh+' set '+params.ambari_server_host+' '+params.cluster_name+' ranger-hive-policymgr-ssl '+ src_dir+'/ranger-hive-policymgr-ssl')
+        Execute(config_sh+' set '+params.ambari_server_host+' '+params.cluster_name+' hive-atlas-application.properties "atlas.kafka.zookeeper.connect" "'+params.data_plane_zookeeper_host+':'+params.zookeeper_port+'"')
 
-    Execute(config_sh+' set '+params.ambari_server_host+' '+params.cluster_name+' ranger-hive-security '+ src_dir+'/ranger-hive-security')
+        Execute('echo Setting Storm Atlas Client Configuration...')
+        Execute(config_sh+' set '+params.ambari_server_host+' '+params.cluster_name+' storm-atlas-application.properties "atlas.rest.address" "'+params.data_plane_atlas_host+':'+params.atlas_port+'"')
 
-    Execute('echo Setting Hive Atlas Client Configuration...')
-    Execute(config_sh+' set '+params.ambari_server_host+' '+params.cluster_name+' hive-site "atlas.rest.address" "'+params.data_plane_atlas_host+':'+params.atlas_port+'"')
+        Execute(config_sh+' set '+params.ambari_server_host+' '+params.cluster_name+' storm-atlas-application.properties "atlas.kafka.zookeeper.connect" "'+params.data_plane_zookeeper_host+':'+params.zookeeper_port+'"')
 
-    Execute(config_sh+' set '+params.ambari_server_host+' '+params.cluster_name+' hive-atlas-application.properties "atlas.kafka.bootstrap.servers" "'+params.data_plane_kafka_host+':'+params.kafka_port+'"')
+        Execute(config_sh+' set '+params.ambari_server_host+' '+params.cluster_name+' storm-atlas-application.properties "atlas.kafka.bootstrap.servers" "'+params.data_plane_kafka_host+':'+params.kafka_port+'"')
 
-    Execute(config_sh+' set '+params.ambari_server_host+' '+params.cluster_name+' hive-atlas-application.properties "atlas.kafka.zookeeper.connect" "'+params.data_plane_zookeeper_host+':'+params.zookeeper_port+'"')
+        Execute('echo Setting Sqoop Atlas Client Configuration...')
+        Execute(config_sh+' set '+params.ambari_server_host+' '+params.cluster_name+' sqoop-atlas-application.properties "atlas.rest.address" "'+params.data_plane_atlas_host+':'+params.atlas_port+'"')
 
-    Execute('echo Setting Storm Atlas Client Configuration...')
-    Execute(config_sh+' set '+params.ambari_server_host+' '+params.cluster_name+' storm-atlas-application.properties "atlas.rest.address" "'+params.data_plane_atlas_host+':'+params.atlas_port+'"')
+        Execute(config_sh+' set '+params.ambari_server_host+' '+params.cluster_name+' sqoop-atlas-application.properties "atlas.kafka.zookeeper.connect" "'+params.data_plane_zookeeper_host+':'+params.zookeeper_port+'"')
 
-    Execute(config_sh+' set '+params.ambari_server_host+' '+params.cluster_name+' storm-atlas-application.properties "atlas.kafka.zookeeper.connect" "'+params.data_plane_zookeeper_host+':'+params.zookeeper_port+'"')
+        Execute(config_sh+' set '+params.ambari_server_host+' '+params.cluster_name+' sqoop-atlas-application.properties "atlas.kafka.bootstrap.servers" "'+params.data_plane_kafka_host+':'+params.kafka_port+'"')
 
-    Execute(config_sh+' set '+params.ambari_server_host+' '+params.cluster_name+' storm-atlas-application.properties "atlas.kafka.bootstrap.servers" "'+params.data_plane_kafka_host+':'+params.kafka_port+'"')
+        Execute('echo Setting Hive Meta Store Configuration...')
+        Execute(config_sh+' set '+params.ambari_server_host+' '+params.cluster_name+' hive-site "javax.jdo.option.ConnectionURL" "jdbc:mysql://'+params.data_plane_hive_server_host+'/hive?createDatabaseIfNotExist=true"')
 
-    Execute('echo Setting Sqoop Atlas Client Configuration...')
-    Execute(config_sh+' set '+params.ambari_server_host+' '+params.cluster_name+' sqoop-atlas-application.properties "atlas.rest.address" "'+params.data_plane_atlas_host+':'+params.atlas_port+'"')
+        Execute(config_sh+' set '+params.ambari_server_host+' '+params.cluster_name+' hive-site "javax.jdo.option.ConnectionPassword" "hive"')
 
-    Execute(config_sh+' set '+params.ambari_server_host+' '+params.cluster_name+' sqoop-atlas-application.properties "atlas.kafka.zookeeper.connect" "'+params.data_plane_zookeeper_host+':'+params.zookeeper_port+'"')
+        Execute(config_sh+' set '+params.ambari_server_host+' '+params.cluster_name+' hive-site "hive.metastore.uris" "'+params.data_plane_hive_metastore_uri+'"')
 
-    Execute(config_sh+' set '+params.ambari_server_host+' '+params.cluster_name+' sqoop-atlas-application.properties "atlas.kafka.bootstrap.servers" "'+params.data_plane_kafka_host+':'+params.kafka_port+'"')
-
-    Execute('echo Setting Hive Meta Store Configuration...')
-    Execute(config_sh+' set '+params.ambari_server_host+' '+params.cluster_name+' hive-site "javax.jdo.option.ConnectionURL" "jdbc:mysql://'+params.data_plane_hive_server_host+'/hive?createDatabaseIfNotExist=true"')
-
-    Execute(config_sh+' set '+params.ambari_server_host+' '+params.cluster_name+' hive-site "javax.jdo.option.ConnectionPassword" "hive"')
-
-    Execute(config_sh+' set '+params.ambari_server_host+' '+params.cluster_name+' hive-site "hive.metastore.uris" "'+params.data_plane_hive_metastore_uri+'"')
-
-    requests.put('http://'+params.ambari_server_host+':'+params.ambari_server_port+'/api/v1/clusters/'+params.cluster_name+'/services/HIVE', auth=('admin', 'admin'),headers={'X-Requested-By':'ambari'},data=('{"RequestInfo": {"context": "Stop HIVE"}, "ServiceInfo": {"state": "INSTALLED"}}'))
-    
-    time.sleep(2)
-    requests.put('http://'+params.ambari_server_host+':'+params.ambari_server_port+'/api/v1/clusters/'+params.cluster_name+'/services/STORM', auth=('admin', 'admin'),headers={'X-Requested-By':'ambari'},data=('{"RequestInfo": {"context": "Stop STORM"}, "ServiceInfo": {"state": "INSTALLED"}}'))
-    
-    time.sleep(2)
-    requests.put('http://'+params.ambari_server_host+':'+params.ambari_server_port+'/api/v1/clusters/'+params.cluster_name+'/services/SQOOP', auth=('admin', 'admin'),headers={'X-Requested-By':'ambari'},data=('{"RequestInfo": {"context": "Stop SQOOP"}, "ServiceInfo": {"state": "INSTALLED"}}'))
-    
-    time.sleep(5)
-    requests.put('http://'+params.ambari_server_host+':'+params.ambari_server_port+'/api/v1/clusters/'+params.cluster_name+'/services/HIVE', auth=('admin', 'admin'),headers={'X-Requested-By':'ambari'},data=('{"RequestInfo": {"context": "Start HIVE"}, "ServiceInfo": {"state": "STARTED"}}'))
-    
-    time.sleep(5)
-    requests.put('http://'+params.ambari_server_host+':'+params.ambari_server_port+'/api/v1/clusters/'+params.cluster_name+'/services/STORM', auth=('admin', 'admin'),headers={'X-Requested-By':'ambari'},data=('{"RequestInfo": {"context": "Start STORM"}, "ServiceInfo": {"state": "STARTED"}}'))
-    
-    time.sleep(1)
-    requests.put('http://'+params.ambari_server_host+':'+params.ambari_server_port+'/api/v1/clusters/'+params.cluster_name+'/services/SQOOP', auth=('admin', 'admin'),headers={'X-Requested-By':'ambari'},data=('{"RequestInfo": {"context": "Start SQOOP"}, "ServiceInfo": {"state": "STARTED"}}'))
+        requests.put('http://'+params.ambari_server_host+':'+params.ambari_server_port+'/api/v1/clusters/'+params.cluster_name+'/services/HIVE', auth=('admin', 'admin'),headers={'X-Requested-By':'ambari'},data=('{"RequestInfo": {"context": "Stop HIVE"}, "ServiceInfo": {"state": "INSTALLED"}}'))
+        time.sleep(2)
+        requests.put('http://'+params.ambari_server_host+':'+params.ambari_server_port+'/api/v1/clusters/'+params.cluster_name+'/services/STORM', auth=('admin', 'admin'),headers={'X-Requested-By':'ambari'},data=('{"RequestInfo": {"context": "Stop STORM"}, "ServiceInfo": {"state": "INSTALLED"}}'))
+        time.sleep(2)
+        requests.put('http://'+params.ambari_server_host+':'+params.ambari_server_port+'/api/v1/clusters/'+params.cluster_name+'/services/SQOOP', auth=('admin', 'admin'),headers={'X-Requested-By':'ambari'},data=('{"RequestInfo": {"context": "Stop SQOOP"}, "ServiceInfo": {"state": "INSTALLED"}}'))
+        time.sleep(5)
+        requests.put('http://'+params.ambari_server_host+':'+params.ambari_server_port+'/api/v1/clusters/'+params.cluster_name+'/services/HIVE', auth=('admin', 'admin'),headers={'X-Requested-By':'ambari'},data=('{"RequestInfo": {"context": "Start HIVE"}, "ServiceInfo": {"state": "STARTED"}}'))
+        time.sleep(5)
+        requests.put('http://'+params.ambari_server_host+':'+params.ambari_server_port+'/api/v1/clusters/'+params.cluster_name+'/services/STORM', auth=('admin', 'admin'),headers={'X-Requested-By':'ambari'},data=('{"RequestInfo": {"context": "Start STORM"}, "ServiceInfo": {"state": "STARTED"}}'))
+        time.sleep(1)
+        requests.put('http://'+params.ambari_server_host+':'+params.ambari_server_port+'/api/v1/clusters/'+params.cluster_name+'/services/SQOOP', auth=('admin', 'admin'),headers={'X-Requested-By':'ambari'},data=('{"RequestInfo": {"context": "Start SQOOP"}, "ServiceInfo": {"state": "STARTED"}}'))
 
   def status(self, env):
     raise ClientComponentHasNoStatus()
