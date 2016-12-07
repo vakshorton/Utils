@@ -58,14 +58,14 @@
           </execution>
         </executions>
       </plugin>
-      <plugin>
+<!--       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.5.1</version>
         <configuration>
           <source/>
           <target/>
         </configuration>
-      </plugin>
+      </plugin> -->
      <plugin>
                 <groupId>org.scala-tools</groupId>
                 <artifactId>maven-scala-plugin</artifactId>
