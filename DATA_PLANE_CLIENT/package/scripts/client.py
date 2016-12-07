@@ -62,8 +62,8 @@ class DataPlaneClient(Script):
     
     Execute('echo Copying configuration files to Hive Server conf directory')
     dest_dir = ('/usr/hdp/current/hive-server2/conf/conf.server')
-    
-    if os.path.exists(dest_dir):
+    hiveserver_log = ('/var/log/hive/hiveserver2.log')
+    if os.path.exists(dest_dir) and os.path.exists(hiveserver_log):
         src_files = os.listdir(src_dir)
         for file_name in src_files:
             full_file_name = os.path.join(src_dir, file_name)
@@ -118,18 +118,30 @@ class DataPlaneClient(Script):
 
         Execute(config_sh+' set '+params.ambari_server_host+' '+params.cluster_name+' hive-site "hive.metastore.uris" "'+params.data_plane_hive_metastore_uri+'"')
 
+        Execute('echo Configuring Cluster Storage targets...')
+        Execute(config_sh+' set '+params.ambari_server_host+' '+params.cluster_name+' hive-site "hive.metastore.warehouse.dir" "hdfs://'+params.data_plane_namenode_host+':'+params.namenode_port+'/apps/hive/warehouse"')
+
+        Execute(config_sh+' set '+params.ambari_server_host+' '+params.cluster_name+' core-site "fs.default.name" "hdfs://'+params.data_plane_namenode_host+':'+params.namenode_port+'"')
+
+        Execute(config_sh+' set '+params.ambari_server_host+' '+params.cluster_name+' core-site "fs.defaultFS" "hdfs://'+params.data_plane_namenode_host+':'+params.namenode_port+'"')
+
+        Execute(config_sh+' set '+params.ambari_server_host+' '+params.cluster_name+' spark-hive-site-override "hive.metastore.uris" "'+params.data_plane_hive_metastore_uri+'"')
         requests.put('http://'+params.ambari_server_host+':'+params.ambari_server_port+'/api/v1/clusters/'+params.cluster_name+'/services/HIVE', auth=('admin', 'admin'),headers={'X-Requested-By':'ambari'},data=('{"RequestInfo": {"context": "Stop HIVE"}, "ServiceInfo": {"state": "INSTALLED"}}'))
         time.sleep(2)
         requests.put('http://'+params.ambari_server_host+':'+params.ambari_server_port+'/api/v1/clusters/'+params.cluster_name+'/services/STORM', auth=('admin', 'admin'),headers={'X-Requested-By':'ambari'},data=('{"RequestInfo": {"context": "Stop STORM"}, "ServiceInfo": {"state": "INSTALLED"}}'))
         time.sleep(2)
-        requests.put('http://'+params.ambari_server_host+':'+params.ambari_server_port+'/api/v1/clusters/'+params.cluster_name+'/services/SQOOP', auth=('admin', 'admin'),headers={'X-Requested-By':'ambari'},data=('{"RequestInfo": {"context": "Stop SQOOP"}, "ServiceInfo": {"state": "INSTALLED"}}'))
-        time.sleep(5)
+        requests.put('http://'+params.ambari_server_host+':'+params.ambari_server_port+'/api/v1/clusters/'+params.cluster_name+'/services/HDFS', auth=('admin', 'admin'),headers={'X-Requested-By':'ambari'},data=('{"RequestInfo": {"context": "Stop HDFS"}, "ServiceInfo": {"state": "INSTALLED"}}'))
+        time.sleep(2)
+        requests.put('http://'+params.ambari_server_host+':'+params.ambari_server_port+'/api/v1/clusters/'+params.cluster_name+'/services/SPARK', auth=('admin', 'admin'),headers={'X-Requested-By':'ambari'},data=('{"RequestInfo": {"context": "Stop SPARK"}, "ServiceInfo": {"state": "INSTALLED"}}'))
+        time.sleep(2)
         requests.put('http://'+params.ambari_server_host+':'+params.ambari_server_port+'/api/v1/clusters/'+params.cluster_name+'/services/HIVE', auth=('admin', 'admin'),headers={'X-Requested-By':'ambari'},data=('{"RequestInfo": {"context": "Start HIVE"}, "ServiceInfo": {"state": "STARTED"}}'))
         time.sleep(5)
         requests.put('http://'+params.ambari_server_host+':'+params.ambari_server_port+'/api/v1/clusters/'+params.cluster_name+'/services/STORM', auth=('admin', 'admin'),headers={'X-Requested-By':'ambari'},data=('{"RequestInfo": {"context": "Start STORM"}, "ServiceInfo": {"state": "STARTED"}}'))
         time.sleep(1)
-        requests.put('http://'+params.ambari_server_host+':'+params.ambari_server_port+'/api/v1/clusters/'+params.cluster_name+'/services/SQOOP', auth=('admin', 'admin'),headers={'X-Requested-By':'ambari'},data=('{"RequestInfo": {"context": "Start SQOOP"}, "ServiceInfo": {"state": "STARTED"}}'))
-
+        requests.put('http://'+params.ambari_server_host+':'+params.ambari_server_port+'/api/v1/clusters/'+params.cluster_name+'/services/HDFS', auth=('admin', 'admin'),headers={'X-Requested-By':'ambari'},data=('{"RequestInfo": {"context": "Start HDFS"}, "ServiceInfo": {"state": "STARTED"}}'))
+        time.sleep(2)
+        requests.put('http://'+params.ambari_server_host+':'+params.ambari_server_port+'/api/v1/clusters/'+params.cluster_name+'/services/SPARK', auth=('admin', 'admin'),headers={'X-Requested-By':'ambari'},data=('{"RequestInfo": {"context": "Start SPARK"}, "ServiceInfo": {"state": "STARTED"}}'))
+        
   def status(self, env):
     raise ClientComponentHasNoStatus()
 
