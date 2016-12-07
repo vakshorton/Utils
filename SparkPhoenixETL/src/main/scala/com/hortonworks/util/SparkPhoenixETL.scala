@@ -7,17 +7,20 @@ object SparkPhoenixETL {
   import org.apache.spark.SparkConf
   import org.apache.spark.sql.SQLContext
   import org.apache.phoenix.spark._ 
+  import org.apache.spark.sql.hive._ 
   
   def main(args: Array[String]) {
     val conf = new SparkConf().setAppName("Spark Phoenix ETL")
       //.config("spark.some.config.option", "some-value")
     val sc = new SparkContext(conf)
-    val sqlContext = new SQLContext(sc)
+    val sqlContext = new HiveContext(sc)
     val zkUrl = args(0) //"zk_host:zk_port:zk_path"
     val transDF = sqlContext.load( "org.apache.phoenix.spark", Map("table" -> "\"TransactionHistory\"", "zkUrl" -> zkUrl))
     val itemTransDF = sqlContext.load( "org.apache.phoenix.spark", Map("table" -> "\"TransactionItems\"", "zkUrl" -> zkUrl))
     val productDF = sqlContext.load( "org.apache.phoenix.spark", Map("table" -> "\"Product\"", "zkUrl" -> zkUrl))
-
+    
+    import sqlContext.implicits._
+    
     transDF.registerTempTable("phoenix_retail_transactions")
     itemTransDF.registerTempTable("phoenix_retail_item_transactions")
     productDF.registerTempTable("phoenix_retail_products")
