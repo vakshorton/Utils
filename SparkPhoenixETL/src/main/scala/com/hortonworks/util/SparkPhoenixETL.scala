@@ -23,7 +23,6 @@ object SparkPhoenixETL {
     applicationType match {
       case "CreditFraud" => 
         val transDF = sqlContext.load( "org.apache.phoenix.spark", Map("table" -> "\"TransactionHistory\"", "zkUrl" -> zkUrl))
-        
         //val customerDF = sqlContext.load( "org.apache.phoenix.spark", Map("table" -> "\"CustomerAccount\"", "zkUrl" -> zkUrl))
         
         transDF.registerTempTable("phoenix_transaction_history")
