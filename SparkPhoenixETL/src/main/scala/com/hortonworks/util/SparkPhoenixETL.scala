@@ -16,14 +16,14 @@ object SparkPhoenixETL {
     val sqlContext = new HiveContext(sc)
     val zkUrl = args(0) //"zk_host:zk_port:zk_path"
     val sourceClusterName = args(1)
-    val applicationType = args(1)
-    
+    val applicationType = args(2)
     
     import sqlContext.implicits._
     
     applicationType match {
       case "CreditFraud" => 
         val transDF = sqlContext.load( "org.apache.phoenix.spark", Map("table" -> "\"TransactionHistory\"", "zkUrl" -> zkUrl))
+        
         //val customerDF = sqlContext.load( "org.apache.phoenix.spark", Map("table" -> "\"CustomerAccount\"", "zkUrl" -> zkUrl))
         
         transDF.registerTempTable("phoenix_transaction_history")
