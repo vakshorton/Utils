@@ -30,7 +30,7 @@ object SparkPhoenixETL {
 
         sqlContext.setConf("hive.exec.dynamic.partition", "true")
         sqlContext.setConf("hive.exec.dynamic.partition.mode", "nonstrict")
-        sqlContext.sql("insert into table transaction_history_"+sourceClusterName+" partition(accounttype) accountnumber,fraudulent,merchantid,merchanttype,amount,currency,iscardpresent,latitude,longitude,transactionid,transactiontimestamp,distancefromhome,distancefromprev")
+        sqlContext.sql("insert into table transaction_history_"+sourceClusterName+" partition(accounttype) select accountnumber,frauduent,merchantid,merchanttype,amount,currency,iscardpresent,latitude,longitude,transactionid,transactiontimestamp,distancefromhome,distancefromprev from phoenix_transaction_history")
         //sqlContext.sql("insert into table customer_account_"+sourceClusterName+" ")
       case "Retail" =>
         val transDF = sqlContext.load( "org.apache.phoenix.spark", Map("table" -> "\"TransactionHistory\"", "zkUrl" -> zkUrl))
