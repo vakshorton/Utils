@@ -32,7 +32,7 @@ object SparkPhoenixETL {
         
         sqlContext.setConf("hive.exec.dynamic.partition", "true")
         sqlContext.setConf("hive.exec.dynamic.partition.mode", "nonstrict")
-        sqlContext.sql("insert into table telecom_device_status_log_"+sourceClusterName+" select serialNumber, status, state, internalTemp, signalStrength, eventTimeStamp from phoenix_device_status_log")
+        sqlContext.sql("insert into table telecom_device_status_log_"+sourceClusterName+" select serialNumber, status, state, internalTemp, signalStrength, timeStamp from phoenix_device_status_log")
         sqlContext.sql("insert into table telecom_device_details_"+sourceClusterName+" select serialNumber, deviceModel, latitude, longitude, ipAddress, port from phoenix_device_details")
       case "CreditFraud" => 
         val transDF = sqlContext.load( "org.apache.phoenix.spark", Map("table" -> "\"TransactionHistory\"", "zkUrl" -> zkUrl))
