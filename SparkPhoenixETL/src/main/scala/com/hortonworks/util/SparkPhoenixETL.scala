@@ -27,12 +27,12 @@ object SparkPhoenixETL {
         deviceLogDF.registerTempTable("phoenix_device_status_log")
         deviceDetailDF.registerTempTable("phoenix_device_details")
         
-        //sqlContext.sql("CREATE TABLE IF NOT EXISTS telecom_device_status_log_"+sourceClusterName+" (serialNumber string, status string, state string, internalTemp int, signalStrength int, timeStamp bigint) CLUSTERED BY (serialNumber) INTO 30 BUCKETS STORED AS ORC")
+        //sqlContext.sql("CREATE TABLE IF NOT EXISTS telecom_device_status_log_"+sourceClusterName+" (serialNumber string, status string, state string, internalTemp int, signalStrength int, eventTimeStamp bigint) CLUSTERED BY (serialNumber) INTO 30 BUCKETS STORED AS ORC")
         //sqlContext.sql("CREATE TABLE IF NOT EXISTS telecom_device_details_"+sourceClusterName+" (serialNumber string, deviceModel string, latitude string, longitude string, ipAddress string, port string) CLUSTERED BY (serialNumber) INTO 30 BUCKETS STORED AS ORC")
         
         sqlContext.setConf("hive.exec.dynamic.partition", "true")
         sqlContext.setConf("hive.exec.dynamic.partition.mode", "nonstrict")
-        sqlContext.sql("insert into table telecom_device_status_log_"+sourceClusterName+" select serialNumber, status, state, internalTemp, signalStrength, timeStamp from phoenix_device_status_log")
+        sqlContext.sql("insert into table telecom_device_status_log_"+sourceClusterName+" select serialNumber, status, state, internalTemp, signalStrength, eventTimeStamp from phoenix_device_status_log")
         sqlContext.sql("insert into table telecom_device_details_"+sourceClusterName+" select serialNumber, deviceModel, latitude, longitude, ipAddress, port from phoenix_device_details")
       case "CreditFraud" => 
         val transDF = sqlContext.load( "org.apache.phoenix.spark", Map("table" -> "\"TransactionHistory\"", "zkUrl" -> zkUrl))
