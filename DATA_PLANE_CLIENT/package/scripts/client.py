@@ -113,8 +113,8 @@ class DataPlaneClient(Script):
 
     Execute(config_sh+' set '+params.ambari_server_host+' '+params.cluster_name+' storm-atlas-application.properties "atlas.kafka.bootstrap.servers" "'+params.data_plane_kafka_host+':'+params.kafka_port+'"')
 
-    Execute('echo Setting Sqoop Atlas Client Configuration...')
-    Execute(config_sh+' set '+params.ambari_server_host+' '+params.cluster_name+' sqoop-atlas-application.properties "atlas.rest.address" "'+params.data_plane_atlas_host+':'+params.atlas_port+'"')
+    #Execute('echo Setting Sqoop Atlas Client Configuration...')
+    #Execute(config_sh+' set '+params.ambari_server_host+' '+params.cluster_name+' sqoop-atlas-application.properties "atlas.rest.address" "'+params.data_plane_atlas_host+':'+params.atlas_port+'"')
 
     Execute(config_sh+' set '+params.ambari_server_host+' '+params.cluster_name+' sqoop-atlas-application.properties "atlas.kafka.zookeeper.connect" "'+params.data_plane_zookeeper_host+':'+params.zookeeper_port+'"')
 
@@ -127,15 +127,22 @@ class DataPlaneClient(Script):
 
     Execute(config_sh+' set '+params.ambari_server_host+' '+params.cluster_name+' hive-site "hive.metastore.uris" "'+params.data_plane_hive_metastore_uri+'"')
 
-    Execute('echo Configuring Cluster Storage targets...')
-    Execute(config_sh+' set '+params.ambari_server_host+' '+params.cluster_name+' hive-site "hive.metastore.warehouse.dir" "hdfs://'+params.data_plane_namenode_host+':'+params.namenode_port+'/apps/hive/warehouse"')
-
-    Execute(config_sh+' set '+params.ambari_server_host+' '+params.cluster_name+' core-site "fs.default.name" "hdfs://'+params.data_plane_namenode_host+':'+params.namenode_port+'"')
-
-    Execute(config_sh+' set '+params.ambari_server_host+' '+params.cluster_name+' core-site "fs.defaultFS" "hdfs://'+params.data_plane_namenode_host+':'+params.namenode_port+'"')
-
     Execute(config_sh+' set '+params.ambari_server_host+' '+params.cluster_name+' spark-hive-site-override "hive.metastore.uris" "'+params.data_plane_hive_metastore_uri+'"')
-        #requests.put('http://'+params.ambari_server_host+':'+params.ambari_server_port+'/api/v1/clusters/'+params.cluster_name+'/services/HIVE', auth=('admin', 'admin'),headers={'X-Requested-By':'ambari'},data=('{"RequestInfo": {"context": "Stop HIVE"}, "ServiceInfo": {"state": "INSTALLED"}}'))
+
+    Execute('echo Configuring Cluster Storage targets...')
+    Execute(config_sh+' set '+params.ambari_server_host+' '+params.cluster_name+' hive-site "hive.metastore.warehouse.dir" "'+params.s3_warehouse+'/apps/hive/warehouse"')
+
+    Execute('echo Configuring Data Storage and Keys...')
+    Execute(config_sh+' set '+params.ambari_server_host+' '+params.cluster_name+' hive-site "hive.metastore.warehouse.dir" "'+params.s3_warehouse+'/apps/hive/warehouse"')
+    
+    Execute(config_sh+' set '+params.ambari_server_host+' '+params.cluster_name+' core-site "fs.s3a.access.key" "' + params.aws_key + '")
+    
+    Execute(config_sh+' set '+params.ambari_server_host+' '+params.cluster_name+' core-site "fs.s3a.access.secret" "' + params.aws_secret + '")
+    
+#    Execute(config_sh+' set '+params.ambari_server_host+' '+params.cluster_name+' core-site "fs.default.name" "hdfs://'+params.data_plane_namenode_host+':'+params.namenode_port+'"')
+
+#    Execute(config_sh+' set '+params.ambari_server_host+' '+params.cluster_name+' core-site "fs.defaultFS" "hdfs://'+params.data_plane_namenode_host+':'+params.namenode_port+'"')
+#    #requests.put('http://'+params.ambari_server_host+':'+params.ambari_server_port+'/api/v1/clusters/'+params.cluster_name+'/services/HIVE', auth=('admin', 'admin'),headers={'X-Requested-By':'ambari'},data=('{"RequestInfo": {"context": "Stop HIVE"}, "ServiceInfo": {"state": "INSTALLED"}}'))
 #        time.sleep(2)
 #        #requests.put('http://'+params.ambari_server_host+':'+params.ambari_server_port+'/api/v1/clusters/'+params.cluster_name+'/services/STORM', auth=('admin', 'admin'),headers={'X-Requested-By':'ambari'},data=('{"RequestInfo": {"context": "Stop STORM"}, "ServiceInfo": {"state": "INSTALLED"}}'))
 #        time.sleep(2)

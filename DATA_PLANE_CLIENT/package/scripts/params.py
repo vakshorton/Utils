@@ -8,7 +8,11 @@ config = Script.get_config()
 
 install_dir = config['configurations']['data-plane-config']['install_dir']
 download_url = config['configurations']['data-plane-config']['download_url']
-data_plane_ambari_host = config['configurations']['data-plane-config']['data_plane_ambari_host']
+data_plane_ambari_host = config['configurations']['data-plane-config']['shared.services.ambari.host']
+aws_key = config['configurations']['data-plane-config']['shared.services.aws.key']
+aws_secret = config['configurations']['data-plane-config']['shared.services.aws.secret']
+s3_warehouse = config['configurations']['data-plane-config']['shared.services.s3.warehouse.bucket']
+
 demo_install_dir = config['configurations']['control-config']['democontrol.install_dir']
 
 master_configs = config['clusterHostInfo']
@@ -60,8 +64,8 @@ data_plane_atlas_host = str(json.loads(requests.get('http://'+data_plane_ambari_
 
 data_plane_ranger_host = str(json.loads(requests.get('http://'+data_plane_ambari_host+':'+ambari_server_port+'/api/v1/clusters/'+data_plane_cluster_name+'/services/RANGER/components/RANGER_ADMIN', auth=('admin', 'admin')).content).get('host_components')[0].get('HostRoles').get('host_name'))
 
-#data_plane_ranger_hive_repo = 'data-plane_hive'
-data_plane_ranger_hive_repo = cluster_name+'_hive'
+data_plane_ranger_hive_repo = 'sharedservices_hive'
+#data_plane_ranger_hive_repo = cluster_name+'_hive'
 
 list_of_configs = config['configurations']
 list_of_host_level_params = config['configurations']
