@@ -13,6 +13,9 @@ aws_key = config['configurations']['data-plane-config']['shared.services.aws.key
 aws_secret = config['configurations']['data-plane-config']['shared.services.aws.secret']
 s3_warehouse = config['configurations']['data-plane-config']['shared.services.s3.datawarehouse.bucket']
 
+data_plane_ranger_hive_repo = config['configurations']['data-plane-config']['shared.services.ranger.hive.repo']
+#data_plane_ranger_hive_repo = cluster_name+'_hive'
+
 demo_install_dir = config['configurations']['control-config']['democontrol.install_dir']
 
 master_configs = config['clusterHostInfo']
@@ -63,9 +66,6 @@ data_plane_kafka_host = str(json.loads(requests.get('http://'+data_plane_ambari_
 data_plane_atlas_host = str(json.loads(requests.get('http://'+data_plane_ambari_host+':'+ambari_server_port+'/api/v1/clusters/'+data_plane_cluster_name+'/services/ATLAS/components/ATLAS_SERVER', auth=('admin', 'admin')).content).get('host_components')[0].get('HostRoles').get('host_name'))
 
 data_plane_ranger_host = str(json.loads(requests.get('http://'+data_plane_ambari_host+':'+ambari_server_port+'/api/v1/clusters/'+data_plane_cluster_name+'/services/RANGER/components/RANGER_ADMIN', auth=('admin', 'admin')).content).get('host_components')[0].get('HostRoles').get('host_name'))
-
-data_plane_ranger_hive_repo = 'sharedservices_hive'
-#data_plane_ranger_hive_repo = cluster_name+'_hive'
 
 list_of_configs = config['configurations']
 list_of_host_level_params = config['configurations']

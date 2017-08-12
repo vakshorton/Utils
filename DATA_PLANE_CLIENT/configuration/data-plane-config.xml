@@ -22,6 +22,12 @@
   </property>
   
   <property require-input="true">
+    <name>shared.services.ranger.hive.repo</name>
+    <value></value>
+    <description>Ranger Hive authorization policy repo name</description>
+  </property>
+  
+  <property require-input="true">
     <name>shared.services.aws.key</name>
     <value></value>
     <property-type>PASSWORD</property-type>
