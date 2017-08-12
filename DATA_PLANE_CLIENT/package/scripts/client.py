@@ -135,9 +135,9 @@ class DataPlaneClient(Script):
     Execute('echo Configuring Data Storage and Keys...')
     Execute(config_sh+' set '+params.ambari_server_host+' '+params.cluster_name+' hive-site "hive.metastore.warehouse.dir" "'+params.s3_warehouse+'/apps/hive/warehouse"')
     
-    Execute(config_sh+' set '+params.ambari_server_host+' '+params.cluster_name+' core-site "fs.s3a.access.key" "'+params.aws_key+'")
+    Execute(config_sh+' set '+params.ambari_server_host+' '+params.cluster_name+' core-site "fs.s3a.access.key" "'+params.aws_key+'"')
     
-    Execute(config_sh+' set '+params.ambari_server_host+' '+params.cluster_name+' core-site "fs.s3a.access.secret" "'+params.aws_secret+'")
+    Execute(config_sh+' set '+params.ambari_server_host+' '+params.cluster_name+' core-site "fs.s3a.access.secret" "'+params.aws_secret+'"')
     
 #    Execute(config_sh+' set '+params.ambari_server_host+' '+params.cluster_name+' core-site "fs.default.name" "hdfs://'+params.data_plane_namenode_host+':'+params.namenode_port+'"')
 
