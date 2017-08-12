@@ -137,7 +137,7 @@ class DataPlaneClient(Script):
     
     Execute(config_sh+' set '+params.ambari_server_host+' '+params.cluster_name+' core-site "fs.s3a.access.key" "'+params.aws_key+'"')
     
-    Execute(config_sh+' set '+params.ambari_server_host+' '+params.cluster_name+' core-site "fs.s3a.access.secret" "'+params.aws_secret+'"')
+    Execute(config_sh+' set '+params.ambari_server_host+' '+params.cluster_name+' core-site "fs.s3a.secret.key" "'+params.aws_secret+'"')
     
 #    Execute(config_sh+' set '+params.ambari_server_host+' '+params.cluster_name+' core-site "fs.default.name" "hdfs://'+params.data_plane_namenode_host+':'+params.namenode_port+'"')
 
