@@ -11,7 +11,7 @@ download_url = config['configurations']['data-plane-config']['download_url']
 data_plane_ambari_host = config['configurations']['data-plane-config']['shared.services.ambari.host']
 aws_key = config['configurations']['data-plane-config']['shared.services.aws.key']
 aws_secret = config['configurations']['data-plane-config']['shared.services.aws.secret']
-s3_warehouse = config['configurations']['data-plane-config']['shared.services.s3.warehouse.bucket']
+s3_warehouse = config['configurations']['data-plane-config']['shared.services.s3.datawarehouse.bucket']
 
 demo_install_dir = config['configurations']['control-config']['democontrol.install_dir']
 
