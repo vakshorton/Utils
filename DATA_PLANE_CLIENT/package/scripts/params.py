@@ -6,6 +6,16 @@ from resource_management import *
 # server configurations
 config = Script.get_config()
 
+hive_exists_code = requests.get('http://'+params.ambari_server_host+':'+params.ambari_server_port+'/api/v1/clusters/'+params.cluster_name+'/services/HIVE', auth=('admin', 'admin')).status_code
+
+spark_exists_code = requests.get('http://'+params.ambari_server_host+':'+params.ambari_server_port+'/api/v1/clusters/'+params.cluster_name+'/services/SPARK', auth=('admin', 'admin')).status_code
+
+storm_exists_code = requests.get('http://'+params.ambari_server_host+':'+params.ambari_server_port+'/api/v1/clusters/'+params.cluster_name+'/services/STORM', auth=('admin', 'admin')).status_code
+
+nifi_exists_code = requests.get('http://'+params.ambari_server_host+':'+params.ambari_server_port+'/api/v1/clusters/'+params.cluster_name+'/services/NIFI', auth=('admin', 'admin')).status_code
+
+sqoop_exists_code = requests.get('http://'+params.ambari_server_host+':'+params.ambari_server_port+'/api/v1/clusters/'+params.cluster_name+'/services/SQOOP', auth=('admin', 'admin')).status_code
+
 install_dir = config['configurations']['data-plane-config']['install_dir']
 download_url = config['configurations']['data-plane-config']['download_url']
 data_plane_ambari_host = config['configurations']['data-plane-config']['shared.services.ambari.host']
@@ -46,8 +56,9 @@ if 'port' in config['configurations']['kafka-broker']:
 else:
   kafka_port = get_port_from_url(config['configurations']['kafka-broker']['listeners'])
 
-nifi_host = str(master_configs['nifi_master_hosts'][0])
-nifi_port = '9090'
+if nifi_exists_code == '200':
+    nifi_host = str(master_configs['nifi_master_hosts'][0])
+    nifi_port = '9090'
 
 ranger_port = '6080'
 

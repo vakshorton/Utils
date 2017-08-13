@@ -20,8 +20,11 @@ class DataPlaneClient(Script):
     Execute('echo atlas host: ' + params.atlas_host)
     Execute('echo kafka host: ' + params.kafka_broker_host)
     Execute('echo kafka port: ' + params.kafka_port)
-    Execute('echo nifi host: ' + params.nifi_host)
-    Execute('echo nifi port: ' + params.nifi_port)
+    
+    if nifi_exists_code == '200':
+        Execute('echo nifi host: ' + params.nifi_host)
+        Execute('echo nifi port: ' + params.nifi_port)
+    
     Execute('echo stack_version: ' + params.stack_version_unformatted)
     
     Execute('echo data plane ambari host: ' + params.data_plane_ambari_host)
@@ -102,23 +105,23 @@ class DataPlaneClient(Script):
     Execute('echo Setting Hive Atlas Client Configuration...')
     Execute(config_sh+' set '+params.ambari_server_host+' '+params.cluster_name+' hive-site "atlas.rest.address" "'+params.data_plane_atlas_host+':'+params.atlas_port+'"')
 
+    #Execute(config_sh+' set '+params.ambari_server_host+' '+params.cluster_name+' hive-site "atlas.custer.name" "'+params.data_plane_cluster_name+'"')
+
     Execute(config_sh+' set '+params.ambari_server_host+' '+params.cluster_name+' hive-atlas-application.properties "atlas.kafka.bootstrap.servers" "'+params.data_plane_kafka_host+':'+params.kafka_port+'"')
 
     Execute(config_sh+' set '+params.ambari_server_host+' '+params.cluster_name+' hive-atlas-application.properties "atlas.kafka.zookeeper.connect" "'+params.data_plane_zookeeper_host+':'+params.zookeeper_port+'"')
 
-    Execute('echo Setting Storm Atlas Client Configuration...')
-    Execute(config_sh+' set '+params.ambari_server_host+' '+params.cluster_name+' storm-atlas-application.properties "atlas.rest.address" "'+params.data_plane_atlas_host+':'+params.atlas_port+'"')
+    if params.storm_exists_code == '200':
+        Execute('echo Setting Storm Atlas Client Configuration...')
+        Execute(config_sh+' set '+params.ambari_server_host+' '+params.cluster_name+' storm-atlas-application.properties "atlas.rest.address" "'+params.data_plane_atlas_host+':'+params.atlas_port+'"')
+        Execute(config_sh+' set '+params.ambari_server_host+' '+params.cluster_name+' storm-atlas-application.properties "atlas.kafka.zookeeper.connect" "'+params.data_plane_zookeeper_host+':'+params.zookeeper_port+'"')
+        Execute(config_sh+' set '+params.ambari_server_host+' '+params.cluster_name+' storm-atlas-application.properties "atlas.kafka.bootstrap.servers" "'+params.data_plane_kafka_host+':'+params.kafka_port+'"')
 
-    Execute(config_sh+' set '+params.ambari_server_host+' '+params.cluster_name+' storm-atlas-application.properties "atlas.kafka.zookeeper.connect" "'+params.data_plane_zookeeper_host+':'+params.zookeeper_port+'"')
-
-    Execute(config_sh+' set '+params.ambari_server_host+' '+params.cluster_name+' storm-atlas-application.properties "atlas.kafka.bootstrap.servers" "'+params.data_plane_kafka_host+':'+params.kafka_port+'"')
-
-    #Execute('echo Setting Sqoop Atlas Client Configuration...')
-    #Execute(config_sh+' set '+params.ambari_server_host+' '+params.cluster_name+' sqoop-atlas-application.properties "atlas.rest.address" "'+params.data_plane_atlas_host+':'+params.atlas_port+'"')
-
-    Execute(config_sh+' set '+params.ambari_server_host+' '+params.cluster_name+' sqoop-atlas-application.properties "atlas.kafka.zookeeper.connect" "'+params.data_plane_zookeeper_host+':'+params.zookeeper_port+'"')
-
-    Execute(config_sh+' set '+params.ambari_server_host+' '+params.cluster_name+' sqoop-atlas-application.properties "atlas.kafka.bootstrap.servers" "'+params.data_plane_kafka_host+':'+params.kafka_port+'"')
+    if params.sqoop_exists_code == '200':
+        Execute('echo Setting Sqoop Atlas Client Configuration...')
+        Execute(config_sh+' set '+params.ambari_server_host+' '+params.cluster_name+' sqoop-atlas-application.properties "atlas.rest.address" "'+params.data_plane_atlas_host+':'+params.atlas_port+'"')
+        Execute(config_sh+' set '+params.ambari_server_host+' '+params.cluster_name+' sqoop-atlas-application.properties "atlas.kafka.zookeeper.connect" "'+params.data_plane_zookeeper_host+':'+params.zookeeper_port+'"')
+        Execute(config_sh+' set '+params.ambari_server_host+' '+params.cluster_name+' sqoop-atlas-application.properties "atlas.kafka.bootstrap.servers" "'+params.data_plane_kafka_host+':'+params.kafka_port+'"')
 
     Execute('echo Setting Hive Meta Store Configuration...')
     Execute(config_sh+' set '+params.ambari_server_host+' '+params.cluster_name+' hive-site "javax.jdo.option.ConnectionURL" "jdbc:mysql://'+params.data_plane_hive_server_host+'/hive?createDatabaseIfNotExist=true"')
@@ -127,10 +130,8 @@ class DataPlaneClient(Script):
 
     Execute(config_sh+' set '+params.ambari_server_host+' '+params.cluster_name+' hive-site "hive.metastore.uris" "'+params.data_plane_hive_metastore_uri+'"')
 
-    Execute(config_sh+' set '+params.ambari_server_host+' '+params.cluster_name+' spark-hive-site-override "hive.metastore.uris" "'+params.data_plane_hive_metastore_uri+'"')
-
-    Execute('echo Configuring Cluster Storage targets...')
-    Execute(config_sh+' set '+params.ambari_server_host+' '+params.cluster_name+' hive-site "hive.metastore.warehouse.dir" "'+params.s3_warehouse+'/apps/hive/warehouse"')
+    if params.spark_exists_code == '200':
+        Execute(config_sh+' set '+params.ambari_server_host+' '+params.cluster_name+' spark-hive-site-override "hive.metastore.uris" "'+params.data_plane_hive_metastore_uri+'"')
 
     Execute('echo Configuring Data Storage and Keys...')
     Execute(config_sh+' set '+params.ambari_server_host+' '+params.cluster_name+' hive-site "hive.metastore.warehouse.dir" "'+params.s3_warehouse+'/apps/hive/warehouse"')
