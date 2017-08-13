@@ -28,15 +28,15 @@ data_plane_cluster_name = str(json.loads(requests.get('http://'+data_plane_ambar
 cluster_name = str(json.loads(requests.get('http://'+ambari_server_host+':'+ambari_server_port+'/api/v1/clusters', auth=('admin', 'admin')).content).get('items')[0].get('Clusters').get('cluster_name'))
 stack_version_unformatted = config['hostLevelParams']['stack_version']
 
-hive_exists_code = requests.get('http://'+ambari_server_host+':'ambari_server_port+'/api/v1/clusters/'+cluster_name+'/services/HIVE', auth=('admin', 'admin')).status_code
+hive_exists_code = requests.get('http://'+ambari_server_host+':'+ambari_server_port+'/api/v1/clusters/'+cluster_name+'/services/HIVE', auth=('admin', 'admin')).status_code
 
-spark_exists_code = requests.get('http://'+ambari_server_host+':'ambari_server_port+'/api/v1/clusters/'+cluster_name+'/services/SPARK', auth=('admin', 'admin')).status_code
+spark_exists_code = requests.get('http://'+ambari_server_host+':'+ambari_server_port+'/api/v1/clusters/'+cluster_name+'/services/SPARK', auth=('admin', 'admin')).status_code
 
-storm_exists_code = requests.get('http://'+ambari_server_host+':'ambari_server_port+'/api/v1/clusters/'+cluster_name+'/services/STORM', auth=('admin', 'admin')).status_code
+storm_exists_code = requests.get('http://'+ambari_server_host+':'+ambari_server_port+'/api/v1/clusters/'+cluster_name+'/services/STORM', auth=('admin', 'admin')).status_code
 
-nifi_exists_code = requests.get('http://'+ambari_server_host+':'ambari_server_port+'/api/v1/clusters/'+cluster_name+'/services/NIFI', auth=('admin', 'admin')).status_code
+nifi_exists_code = requests.get('http://'+ambari_server_host+':'+ambari_server_port+'/api/v1/clusters/'+cluster_name+'/services/NIFI', auth=('admin', 'admin')).status_code
 
-sqoop_exists_code = requests.get('http://'+ambari_server_host+':'ambari_server_port+'/api/v1/clusters/'+cluster_name+'/services/SQOOP', auth=('admin', 'admin')).status_code
+sqoop_exists_code = requests.get('http://'+ambari_server_host+':'+ambari_server_port+'/api/v1/clusters/'+cluster_name+'/services/SQOOP', auth=('admin', 'admin')).status_code
 
 master_configs = config['clusterHostInfo']
 namenode_host =  str(master_configs['namenode_host'][0])
