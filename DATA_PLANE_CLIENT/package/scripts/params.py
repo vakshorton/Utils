@@ -56,7 +56,7 @@ nifi_exists_code = requests.get('http://'+ambari_server_host+':'+ambari_server_p
 
 sqoop_exists_code = requests.get('http://'+ambari_server_host+':'+ambari_server_port+'/api/v1/clusters/'+cluster_name+'/services/SQOOP', auth=('admin', 'admin')).status_code
 
-if nifi_exists_code == '200':
+if requests.get('http://'+ambari_server_host+':'+ambari_server_port+'/api/v1/clusters/'+cluster_name+'/services/NIFI', auth=('admin', 'admin')).status_code == '200':
     nifi_host = str(master_configs['nifi_master_hosts'][0])
     nifi_port = '9090'
 
