@@ -105,7 +105,9 @@ class DataPlaneClient(Script):
     Execute('echo Setting Hive Atlas Client Configuration...')
     Execute(config_sh+' set '+params.ambari_server_host+' '+params.cluster_name+' hive-site "atlas.rest.address" "'+params.data_plane_atlas_host+':'+params.atlas_port+'"')
 
-    #Execute(config_sh+' set '+params.ambari_server_host+' '+params.cluster_name+' hive-site "atlas.custer.name" "'+params.data_plane_cluster_name+'"')
+    Execute(config_sh+' set '+params.ambari_server_host+' '+params.cluster_name+' hive-site "atlas.custer.name" "'+params.data_plane_cluster_name+'"')
+
+    Execute(config_sh+' set '+params.ambari_server_host+' '+params.cluster_name+' application.properties "atlas.custer.name" "'+params.data_plane_cluster_name+'"')
 
     Execute(config_sh+' set '+params.ambari_server_host+' '+params.cluster_name+' hive-atlas-application.properties "atlas.kafka.bootstrap.servers" "'+params.data_plane_kafka_host+':'+params.kafka_port+'"')
 
