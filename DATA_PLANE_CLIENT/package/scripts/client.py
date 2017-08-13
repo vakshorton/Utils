@@ -21,7 +21,7 @@ class DataPlaneClient(Script):
     Execute('echo kafka host: ' + params.kafka_broker_host)
     Execute('echo kafka port: ' + params.kafka_port)
     
-    if nifi_exists_code == '200':
+    if params.nifi_exists_code == '200':
         Execute('echo nifi host: ' + params.nifi_host)
         Execute('echo nifi port: ' + params.nifi_port)
     
